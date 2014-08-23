@@ -1,4 +1,5 @@
 #import <math.h>
+#include <stdexcept>
 #include "Vector3D.h"
 
 Vector3D::Vector3D(double x, double y, double z, double w) : _x(x), _y(y), _z(z), _w(w) {
@@ -86,10 +87,6 @@ void Vector3D::length(double value) {
     _setLengthValue(value);
 }
 
-void Vector3D::negate() {
-    multiplyByScalar(-1);
-}
-
 // TODO should accept interface
 void Vector3D::add(const Vector3D vector) {
     _x += *vector.x();
@@ -147,8 +144,7 @@ void Vector3D::multiplyByScalar(const double scalar) {
 
 void Vector3D::normalize() {
     if (_isZero()) {
-        //throw new ("Forbidden operation: attempt to change the length or normalize a zero vector.")
-        return;
+		throw std::runtime_error("Forbidden operation: attempt to change the length or normalize a zero vector.");
     }
     multiplyByScalar(1 / *length());
     _setLengthValue(1);

@@ -2,7 +2,9 @@
 #define __Matrix3D_H_
 
 
-//#include "Vector3D.h"
+#include "Vector3D.h"
+
+class Vector3D;
 
 class Matrix3D {
 
@@ -53,9 +55,9 @@ public:
 
     void rotateAboutZ(float degrees);
 
-//	void rotateAbout(Vector3D vector, float degrees);
+	void rotateAbout(Vector3D vector, float degrees);
 
-//	void scaleAlong(Vector3D vector, float factor);
+	void scaleAlong(Vector3D vector, float factor);
 
     void inverse();
 
@@ -84,7 +86,7 @@ private:
 
     void _checkIfDeterminantNeedUpdateAfterRotation() const;
 
-//	void _checkUnitVector(Vector3D vector);
+	void _checkUnitVector(Vector3D vector) const;
 
     void _checkNonZeroDeterminant() const;
 

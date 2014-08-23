@@ -63,6 +63,12 @@ public:
     }
 };
 
+Vector3D _createArbitraryVector(double length = 1) {
+	Vector3D vector = Vector3D(0.2666, -0.5347, 0.8019);
+	vector.length(length);
+	return vector;
+}
+
 class MatrixDeterminantIsUpdatedTest : public Matrix3DTest {
 public:
 	void SetUp() override {
@@ -91,13 +97,12 @@ public:
 
     Matrix3D identityMatrix;
 
-    // TODO test with vectors
     void scaleIdentityMatrixAlongArbitraryVector(double vectorLength = 1) {
-//		identityMatrix.scaleAlong(_createArbitraryVector(vectorLength), 5);
+		identityMatrix.scaleAlong(_createArbitraryVector(vectorLength), 5);
     }
 
     void rotateIdentityMatrixAlongArbitraryVector(double vectorLength = 1) {
-//		identityMatrix.rotateAbout(_createArbitraryVector(vectorLength), -15);
+		identityMatrix.rotateAbout(_createArbitraryVector(vectorLength), -15);
     }
 };
 
@@ -244,25 +249,24 @@ TEST_F(IdentityMatrixTest, RotateAboutZ) {
     _assertClose(identityMatrix, 0.866, 0.5, 0, -0.5, 0.866, 0, 0, 0, 1);
 }
 
-// TODO take care of it
-TEST_F(IdentityMatrixTest, DISABLED_RotateAbout) {
+TEST_F(IdentityMatrixTest, RotateAbout) {
     rotateIdentityMatrixAlongArbitraryVector();
     _assertClose(identityMatrix, 0.968, -0.212, -0.131, 0.203, 0.976, -0.084, 0.146, 0.054, 0.988);
 }
 
 //[Test(expects="errors.NotUnitVectorError")]
 TEST_F(IdentityMatrixTest, WhenRotatingAlongNotUnitVector_throwException) {
-	rotateIdentityMatrixAlongArbitraryVector(2);
+	ASSERT_ANY_THROW(rotateIdentityMatrixAlongArbitraryVector(2));
 }
 
-TEST_F(IdentityMatrixTest, DISABLED_ScaleAlong) {
+TEST_F(IdentityMatrixTest, ScaleAlong) {
 	scaleIdentityMatrixAlongArbitraryVector();
 	_assertClose(identityMatrix, 1.285, -0.571, 0.857, -0.571, 2.145, -1.716, 0.857, -1.716, 3.573);
 }
 
 //[Test(expects="errors.NotUnitVectorError")]
 TEST_F(IdentityMatrixTest, WhenScalingAlongNotUnitVector_throwException) {
-	scaleIdentityMatrixAlongArbitraryVector(2);
+	ASSERT_ANY_THROW(scaleIdentityMatrixAlongArbitraryVector(2));
 }
 
 TEST_F(Matrix3DTest, Determinant) {
@@ -315,17 +319,17 @@ TEST_F(OrthogonalMatrixTest, DeterminantIsOne) {
 	ASSERT_THAT(*orthogonalMatrix.determinant(), Eq(1));
 }
 
-TEST_F(OrthogonalMatrixTest, DISABLED_Rotating_doesNotChangeDeterminant) {
+TEST_F(OrthogonalMatrixTest, Rotating_doesNotChangeDeterminant) {
 	double oldDeterminant = *orthogonalMatrix.determinant();
-//	orthogonalMatrix.rotateAbout(_createArbitraryVector(), 30);
+	orthogonalMatrix.rotateAbout(_createArbitraryVector(), 30);
 	ASSERT_THAT(*orthogonalMatrix.determinant(), Eq(oldDeterminant));
 }
 
-TEST_F(OrthogonalMatrixTest, DISABLED_RotatingNotOrthogonalMatrix_changesDeterminant) {
+TEST_F(OrthogonalMatrixTest, RotatingNotOrthogonalMatrix_changesDeterminant) {
 	orthogonalMatrix.x1(*orthogonalMatrix.x1() + 1);
 	orthogonalMatrix.y3(*orthogonalMatrix.y3() - 1);
 	double oldDeterminant = *orthogonalMatrix.determinant();
-//	orthogonalMatrix.rotateAbout(_createArbitraryVector(), 30);
+	orthogonalMatrix.rotateAbout(_createArbitraryVector(), 30);
 	ASSERT_THAT(*orthogonalMatrix.determinant(), Ne(oldDeterminant));
 }
 
@@ -365,8 +369,8 @@ TEST_F(MatrixDeterminantIsUpdatedTest, MultiplyByMatrix) {
 	assertUpdated();
 }
 
-TEST_F(MatrixDeterminantIsUpdatedTest, DISABLED_ScaleAlong) {
-//	matrix.scaleAlong(_createArbitraryVector(), 2);
+TEST_F(MatrixDeterminantIsUpdatedTest, ScaleAlong) {
+	matrix.scaleAlong(_createArbitraryVector(), 2);
 }
 
 TEST_F(Matrix3DTest, SwappingMatrixRows_negatesDeterminant) {
@@ -424,14 +428,14 @@ TEST_F(Matrix3DTest, InverseMatrixMultipliedByOrigin_givesIdentityMatrix) {
 }
 
 //[Test(expects="errors.ZeroDeterminantMatrixError")]
-TEST_F(Matrix3DTest, DISABLED_InverseOfZeroDeterminantMatrix_throwsException) {
+TEST_F(Matrix3DTest, InverseOfZeroDeterminantMatrix_throwsException) {
 	matrix.x3(0);
 	matrix.y3(0);
 	matrix.z3(0);
 
 	ASSERT_THAT(*matrix.determinant(), Eq(0));
 
-	matrix.inverse();
+	ASSERT_ANY_THROW(matrix.inverse());
 }
 
 TEST_F(OrthogonalMatrixTest, IsOrthogonal) {

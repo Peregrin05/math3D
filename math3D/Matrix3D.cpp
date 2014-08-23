@@ -1,11 +1,6 @@
-//
-// Created by Islam Aliev on 20/07/14.
-// Copyright (c) 2014 me. All rights reserved.
-//
-
 #include <math.h>
+#include <stdexcept>
 #include "Matrix3D.h"
-#include "Vector3D.h"
 
 static float const ORTHOGONALIZE_FRACTION = 0.25;
 
@@ -199,27 +194,27 @@ void Matrix3D::rotateAboutZ(float degrees) {
 }
 
 // TODO use interface
-/*void Matrix3D::rotateAbout(Vector3D vector, float degrees) {
+void Matrix3D::rotateAbout(Vector3D vector, float degrees) {
     _checkUnitVector(vector);
     double radians = degrees * M_PI / 180;
     const double *vx = vector.x();
     const double *vy = vector.y();
     const double *vz = vector.z();
-    double cos = cos(radians);
-    double sin = sin(radians);
-    double cosOp = 1 - cos;
-    double vzSin = *vz * sin;
-    double vySin = *vy * sin;
-    double vxSin = *vx * sin;
-    _x1 = *vx * *vx * cosOp + cos;
+    double cosVal = cos(radians);
+    double sinVal = sin(radians);
+    double cosOp = 1 - cosVal;
+    double vzSin = *vz * sinVal;
+    double vySin = *vy * sinVal;
+    double vxSin = *vx * sinVal;
+    _x1 = *vx * *vx * cosOp + cosVal;
     _y1 = *vx * *vy * cosOp + vzSin;
     _z1 = *vx * *vz * cosOp - vySin;
     _x2 = *vx * *vy * cosOp - vzSin;
-    _y2 = *vy * *vy * cosOp + cos;
+    _y2 = *vy * *vy * cosOp + cosVal;
     _z2 = *vy * *vz * cosOp + vxSin;
     _x3 = *vx * *vz * cosOp + vySin;
     _y3 = *vy * *vz * cosOp - vxSin;
-    _z3 = *vz * *vz * cosOp + cos;
+    _z3 = *vz * *vz * cosOp + cosVal;
     _checkIfDeterminantNeedUpdateAfterRotation();
 }
 
@@ -242,7 +237,7 @@ void Matrix3D::scaleAlong(Vector3D vector, float factor) {
     _y3 = z2y3;
     _z3 = 1 + facOp * *vz * *vz;
     _detNeedsUpdate = true;
-}*/
+}
 
 void Matrix3D::inverse() {
     _checkNonZeroDeterminant();
@@ -299,17 +294,17 @@ void Matrix3D::_checkIfDeterminantNeedUpdateAfterRotation() const {
     }
 }
 
-/*void Matrix3D::_checkUnitVector(Vector3D vector) const {
+void Matrix3D::_checkUnitVector(Vector3D vector) const {
     if (*vector.length() != 1) {
-        // TODO throw exception
-        // throw new NotUnitVectorError();
+		throw std::runtime_error("Given vector is not a unit vector.");
+        // throw NotUnitVectorError();
     }
-}*/
+}
 
 void Matrix3D::_checkNonZeroDeterminant() const {
     if (*determinant() == 0) {
-        // TODO throw exception
-        // throw new ZeroDeterminantMatrixError();
+		throw std::runtime_error("Matrix's determinant must not be 0.");
+        // throw ZeroDeterminantMatrixError();
     }
 }
 

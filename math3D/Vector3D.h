@@ -4,6 +4,8 @@
 
 #include "Matrix3D.h"
 
+class Matrix3D;
+
 class Vector3D {
 public:
     Vector3D(double x = 0, double y = 0, double z = 0, double w = 0);
@@ -34,8 +36,6 @@ public:
     void multiplyByScalar(const double scalar);
 
     void normalize();
-
-    void negate();
 
     void add(const Vector3D vector);
 

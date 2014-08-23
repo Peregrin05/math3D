@@ -178,14 +178,12 @@ TEST_F(Vector3DTest, Clone) {
     ASSERT_EQ(*cloneVector.length(), *vector.length());
 }
 
-// TODO: exception
-TEST_F(ZeroVectorTest, DISABLED_NormalizeThrowsException) {
-    zeroVector.normalize();
+TEST_F(ZeroVectorTest, NormalizeThrowsException) {
+	ASSERT_ANY_THROW(zeroVector.normalize());
 }
 
-// TODO: exception
-TEST_F(ZeroVectorTest, DISABLED_SetLengthThrowsException) {
-    zeroVector.length(2);
+TEST_F(ZeroVectorTest, SetLengthThrowsException) {
+	ASSERT_ANY_THROW(zeroVector.length(2));
 }
 
 TEST_F(TwoVectorsTest, Add) {
