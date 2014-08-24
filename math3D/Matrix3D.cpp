@@ -4,9 +4,10 @@
 
 static float const ORTHOGONALIZE_FRACTION = 0.25;
 
-Vector3D _deriveBasisVector(Vector3D v1, Vector3D v2, Vector3D v3) ;
+Vector3D _deriveBasisVector(Vector3D const &v1, Vector3D const &v2, Vector3D const &v3) ;
 
-Matrix3D::Matrix3D(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3) :
+Matrix3D::Matrix3D(double const &x1, double const &y1, double const &z1, double const &x2, double const &y2,
+		double const &z2, double const &x3, double const &y3, double const &z3) :
         _x1(x1), _y1(y1), _z1(z1), _x2(x2), _y2(y2), _z2(z2), _x3(x3), _y3(y3), _z3(z3) {};
 
 const double *Matrix3D::x1() const {
@@ -45,47 +46,47 @@ const double *Matrix3D::z3() const {
     return &_z3;
 }
 
-void Matrix3D::x1(double value) {
+void Matrix3D::x1(double const &value) {
     _x1 = value;
     _detNeedsUpdate = true;
 }
 
-void Matrix3D::x2(double value) {
+void Matrix3D::x2(double const &value) {
     _x2 = value;
     _detNeedsUpdate = true;
 }
 
-void Matrix3D::x3(double value) {
+void Matrix3D::x3(double const &value) {
     _x3 = value;
     _detNeedsUpdate = true;
 }
 
-void Matrix3D::y1(double value) {
+void Matrix3D::y1(double const &value) {
     _y1 = value;
     _detNeedsUpdate = true;
 }
 
-void Matrix3D::y2(double value) {
+void Matrix3D::y2(double const &value) {
     _y2 = value;
     _detNeedsUpdate = true;
 }
 
-void Matrix3D::y3(double value) {
+void Matrix3D::y3(double const &value) {
     _y3 = value;
     _detNeedsUpdate = true;
 }
 
-void Matrix3D::z1(double value) {
+void Matrix3D::z1(double const &value) {
     _z1 = value;
     _detNeedsUpdate = true;
 }
 
-void Matrix3D::z2(double value) {
+void Matrix3D::z2(double const &value) {
     _z2 = value;
     _detNeedsUpdate = true;
 }
 
-void Matrix3D::z3(double value) {
+void Matrix3D::z3(double const &value) {
     _z3 = value;
     _detNeedsUpdate = true;
 }
@@ -126,7 +127,7 @@ void Matrix3D::identity() {
     _detNeedsUpdate = false;
 }
 
-void Matrix3D::multiplyByScalar(double scalar) {
+void Matrix3D::multiplyByScalar(double const &scalar) {
     _x1 *= scalar;
     _y1 *= scalar;
     _z1 *= scalar;
@@ -140,7 +141,7 @@ void Matrix3D::multiplyByScalar(double scalar) {
 }
 
 // TODO interface should be used instead
-void Matrix3D::multiplyByMatrix(Matrix3D matrix) {
+void Matrix3D::multiplyByMatrix(Matrix3D const &matrix) {
     double newX1 = _x1 * *matrix.x1() + _y1 * *matrix.x2() + _z1 * *matrix.x3();
     double newX2 = _x2 * *matrix.x1() + _y2 * *matrix.x2() + _z2 * *matrix.x3();
     double newX3 = _x3 * *matrix.x1() + _y3 * *matrix.x2() + _z3 * *matrix.x3();
@@ -160,7 +161,7 @@ void Matrix3D::multiplyByMatrix(Matrix3D matrix) {
 }
 
 
-void Matrix3D::rotateAboutX(float degrees) {
+void Matrix3D::rotateAboutX(float const &degrees) {
     double radians = degrees * M_PI / 180;
     double cosVal = cos(radians);
     double sinVal = sin(radians);
@@ -171,7 +172,7 @@ void Matrix3D::rotateAboutX(float degrees) {
     _checkIfDeterminantNeedUpdateAfterRotation();
 }
 
-void Matrix3D::rotateAboutY(float degrees) {
+void Matrix3D::rotateAboutY(float const &degrees) {
     double radians = degrees * M_PI / 180;
     double cosVal = cos(radians);
     double sinVal = sin(radians);
@@ -182,7 +183,7 @@ void Matrix3D::rotateAboutY(float degrees) {
     _checkIfDeterminantNeedUpdateAfterRotation();
 }
 
-void Matrix3D::rotateAboutZ(float degrees) {
+void Matrix3D::rotateAboutZ(float const &degrees) {
     double radians = degrees * M_PI / 180;
     double cosVal = cos(radians);
     double sinVal = sin(radians);
@@ -194,7 +195,7 @@ void Matrix3D::rotateAboutZ(float degrees) {
 }
 
 // TODO use interface
-void Matrix3D::rotateAbout(Vector3D vector, float degrees) {
+void Matrix3D::rotateAbout(Vector3D const &vector, float const &degrees) {
     _checkUnitVector(vector);
     double radians = degrees * M_PI / 180;
     const double *vx = vector.x();
@@ -218,7 +219,7 @@ void Matrix3D::rotateAbout(Vector3D vector, float degrees) {
     _checkIfDeterminantNeedUpdateAfterRotation();
 }
 
-void Matrix3D::scaleAlong(Vector3D vector, float factor) {
+void Matrix3D::scaleAlong(Vector3D const &vector, float const &factor) {
     _checkUnitVector(vector);
     const double *vx = vector.x();
     const double *vy = vector.y();
@@ -264,14 +265,14 @@ void Matrix3D::inverse() {
 }
 
 // TODO use interface
-bool Matrix3D::isEqual(Matrix3D matrix) const {
+bool Matrix3D::isEqual(Matrix3D const &matrix) const {
     return *matrix.x1() == _x1 && *matrix.x2() == _x2 && *matrix.x3() == _x3 && *matrix.y1() == _y1 &&
             *matrix.y2() == _y2 && *matrix.y3() == _y3 && *matrix.z1() == _z1 && *matrix.z2() == _z2 &&
             *matrix.z3() == _z3;
 }
 
 // TODO why unsigned precision doesn't work?
-bool Matrix3D::isClose(Matrix3D matrix, unsigned int precision) const {
+bool Matrix3D::isClose(Matrix3D const &matrix, unsigned int const &precision) const {
     int factor = (int) pow(10, (double) precision);
     return _areClose(*matrix.x1(), _x1, factor) && _areClose(*matrix.y1(), _y1, factor) && _areClose(*matrix.z1(), _z1,
     factor) && _areClose(*matrix.x2(), _x2, factor) && _areClose(*matrix.y2(), _y2,
@@ -283,7 +284,7 @@ Matrix3D Matrix3D::clone() const {
     return Matrix3D(_x1, _y1, _z1, _x2, _y2, _z2, _x3, _y3, _z3);
 }
 
-bool Matrix3D::_areClose(double value1, double value2, int factor) const {
+bool Matrix3D::_areClose(double const &value1, double const &value2, int const &factor) const {
     return round(value1 * factor) == round(value2 * factor);
 }
 
@@ -294,7 +295,7 @@ void Matrix3D::_checkIfDeterminantNeedUpdateAfterRotation() const {
     }
 }
 
-void Matrix3D::_checkUnitVector(Vector3D vector) const {
+void Matrix3D::_checkUnitVector(Vector3D const &vector) const {
     if (*vector.length() != 1) {
 		throw std::runtime_error("Given vector is not a unit vector.");
         // throw NotUnitVectorError();
@@ -379,7 +380,7 @@ void Matrix3D::_performOrthogonalizingAlgorithm() {
 	_z3 = *basis3.z();
 }
 
-Vector3D _deriveBasisVector(Vector3D v1, Vector3D v2, Vector3D v3) {
+Vector3D _deriveBasisVector(Vector3D const &v1, Vector3D const &v2, Vector3D const &v3) {
 	double dp12 = Vector3D::dotProduct(v1, v2);
 	double dp22 = Vector3D::dotProduct(v2, v2);
 	double dp13 = Vector3D::dotProduct(v1, v3);

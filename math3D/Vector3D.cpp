@@ -2,11 +2,11 @@
 #include <stdexcept>
 #include "Vector3D.h"
 
-Vector3D::Vector3D(double x, double y, double z, double w) : _x(x), _y(y), _z(z), _w(w) {
+Vector3D::Vector3D(double const &x, double const &y, double const &z, double const &w) : _x(x), _y(y), _z(z), _w(w) {
 }
 
 // TODO use interface
-double Vector3D::distanceBetween(Vector3D vector1, Vector3D vector2) {
+double Vector3D::distanceBetween(Vector3D const &vector1, Vector3D const &vector2) {
     const double x(*vector2.x() - *vector1.x());
     const double y(*vector2.y() - *vector1.y());
     const double z(*vector2.z() - *vector1.z());
@@ -14,19 +14,19 @@ double Vector3D::distanceBetween(Vector3D vector1, Vector3D vector2) {
 }
 
 // TODO use interface
-double Vector3D::dotProduct(Vector3D vector1, Vector3D vector2) {
+double Vector3D::dotProduct(Vector3D const &vector1, Vector3D const &vector2) {
     return *vector2.x() * *vector1.x() + *vector2.y() * *vector1.y() + *vector2.z() * *vector1.z();
 }
 
 // TODO use interface
-double Vector3D::angleBetween(Vector3D vector1, Vector3D vector2) {
+double Vector3D::angleBetween(Vector3D const &vector1, Vector3D const &vector2) {
     double dotProd = dotProduct(vector1, vector2);
     double val = dotProd / *vector1.length() / *vector2.length();
     return acos(val) * 180 / M_PI;
 }
 
 // TODO pass and return interface
-Vector3D Vector3D::crossProduct(Vector3D vector1, Vector3D vector2) {
+Vector3D Vector3D::crossProduct(Vector3D const &vector1, Vector3D const &vector2) {
     Vector3D resultVector;
     resultVector.x(*vector1.y() * *vector2.z() - *vector1.z() * *vector2.y());
     resultVector.y(*vector1.z() * *vector2.x() - *vector1.x() * *vector2.z());
@@ -34,7 +34,7 @@ Vector3D Vector3D::crossProduct(Vector3D vector1, Vector3D vector2) {
     return resultVector;
 }
 
-double Vector3D::_squareRootOfSquareSums(const double a, const double b, const double c) {
+double Vector3D::_squareRootOfSquareSums(double const &a, double const &b, double const &c) {
     return sqrt(a * a + b * b + c * c);
 }
 
@@ -54,22 +54,22 @@ const double *Vector3D::w() const {
     return &_w;
 }
 
-void Vector3D::x(const double value) {
+void Vector3D::x(double const &value) {
     _x = value;
     _lengthNeedsUpdate = true;
 }
 
-void Vector3D::y(const double value) {
+void Vector3D::y(double const &value) {
     _y = value;
     _lengthNeedsUpdate = true;
 }
 
-void Vector3D::z(const double value) {
+void Vector3D::z(double const &value) {
     _z = value;
     _lengthNeedsUpdate = true;
 }
 
-void Vector3D::w(const double value) {
+void Vector3D::w(double const &value) {
     _w = value;
     _lengthNeedsUpdate = true;
 }
@@ -81,14 +81,14 @@ const double *Vector3D::length() const {
     return &_length;
 }
 
-void Vector3D::length(double value) {
+void Vector3D::length(double const &value) {
     normalize();
     multiplyByScalar(value);
     _setLengthValue(value);
 }
 
 // TODO should accept interface
-void Vector3D::add(const Vector3D vector) {
+void Vector3D::add(Vector3D const &vector) {
     _x += *vector.x();
     _y += *vector.y();
     _z += *vector.z();
@@ -96,14 +96,14 @@ void Vector3D::add(const Vector3D vector) {
 }
 
 // TODO should accept interface
-void Vector3D::subtract(const Vector3D vector) {
+void Vector3D::subtract(Vector3D const &vector) {
     _x -= *vector.x();
     _y -= *vector.y();
     _z -= *vector.z();
     _lengthNeedsUpdate = true;
 }
 
-void Vector3D::multiplyByMatrix(Matrix3D matrix) {
+void Vector3D::multiplyByMatrix(Matrix3D const &matrix) {
     double newX = _x * *matrix.x1() + _y * *matrix.x2() + _z * *matrix.x3();
     double newY = _x * *matrix.y1() + _y * *matrix.y2() + _z * *matrix.y3();
     _z = _x * *matrix.z1() + _y * *matrix.z2() + _z * *matrix.z3();
@@ -113,7 +113,7 @@ void Vector3D::multiplyByMatrix(Matrix3D matrix) {
 }
 
 // TODO should return interface
-Vector3D Vector3D::clone() {
+Vector3D Vector3D::clone() const {
     Vector3D cloneVector(_x, _y, _z, _w);
     if (!_lengthNeedsUpdate) {
         cloneVector._setLengthValue(_length);
@@ -121,7 +121,7 @@ Vector3D Vector3D::clone() {
     return cloneVector;
 }
 
-bool Vector3D::isEqualTo(const Vector3D vector) {
+bool Vector3D::isEqualTo(Vector3D const &vector) {
     return *vector.x() == _x && *vector.y() == _y && *vector.z() == _z && *vector.w() == _w;
 }
 
@@ -130,12 +130,12 @@ void Vector3D::_updateLength() const {
     _setLengthValue(value);
 }
 
-void Vector3D::_setLengthValue(const double value) const {
+void Vector3D::_setLengthValue(double const &value) const {
     _length = value;
     _lengthNeedsUpdate = false;
 }
 
-void Vector3D::multiplyByScalar(const double scalar) {
+void Vector3D::multiplyByScalar(double const &scalar) {
     _x *= scalar;
     _y *= scalar;
     _z *= scalar;

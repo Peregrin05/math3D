@@ -8,44 +8,44 @@ class Matrix3D;
 
 class Vector3D {
 public:
-    Vector3D(double x = 0, double y = 0, double z = 0, double w = 0);
+    Vector3D(double const &x = 0, double const &y = 0, double const &z = 0, double const &w = 0);
 
-    static double distanceBetween(Vector3D vector1, Vector3D vector2);
+    static double distanceBetween(Vector3D const &vector1, Vector3D const &vector2);
 
-    static double dotProduct(Vector3D vector1, Vector3D vector2);
+    static double dotProduct(Vector3D const &vector1, Vector3D const &vector2);
 
-    static double angleBetween(Vector3D vector1, Vector3D vector2);
+    static double angleBetween(Vector3D const &vector1, Vector3D const &vector2);
 
-    static Vector3D crossProduct(Vector3D vector1, Vector3D vector2);
+    static Vector3D crossProduct(Vector3D const &vector1, Vector3D const &vector2);
 
     const double *x() const;
-    void x(const double value);
+    void x(double const &value);
 
     const double *y() const;
-    void y(const double value);
+    void y(double const &value);
 
     const double *z() const;
-    void z(const double value);
+    void z(double const &value);
 
     const double *w() const;
-    void w(const double value);
+    void w(double const &value);
 
     const double *length() const;
-    void length(double value);
+    void length(double const &value);
 
-    void multiplyByScalar(const double scalar);
+    void multiplyByScalar(double const &scalar);
 
     void normalize();
 
-    void add(const Vector3D vector);
+    void add(Vector3D const &vector);
 
-    void subtract(const Vector3D vector);
+    void subtract(Vector3D const &vector);
 
-    bool isEqualTo(const Vector3D vector);
+    bool isEqualTo(Vector3D const &vector);
 
-    void multiplyByMatrix(Matrix3D matrix);
+    void multiplyByMatrix(Matrix3D const &matrix);
 
-    Vector3D clone();
+    Vector3D clone() const;
 
 private:
     double _x;
@@ -55,11 +55,11 @@ private:
     mutable double _length;
     mutable bool _lengthNeedsUpdate = true;
 
-    static double _squareRootOfSquareSums(const double a, const double b, const double c);
+    static double _squareRootOfSquareSums(double const &a, double const &b, double const &c);
 
     void _updateLength() const;
 
-    void _setLengthValue(const double value) const;
+    void _setLengthValue(double const &value) const;
 
     bool _isZero();
 };

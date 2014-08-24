@@ -9,35 +9,35 @@ class Vector3D;
 class Matrix3D {
 
 public:
-    Matrix3D(double x1 = 1, double y1 = 0, double z1 = 0, double x2 = 0, double y2 = 1, double z2 = 0,
-            double x3 = 0, double y3 = 0, double z3 = 1);
+    Matrix3D(double const &x1 = 1, double const &y1 = 0, double const &z1 = 0, double const &x2 = 0, double const &y2 = 1, double const &z2 = 0,
+			double const &x3 = 0, double const &y3 = 0, double const &z3 = 1);
 
     const double *x1() const;
-    void x1(double value);
+    void x1(double const &value);
 
     const double *x2() const;
-    void x2(double value);
+    void x2(double const &value);
 
     const double *x3() const;
-    void x3(double value);
+    void x3(double const &value);
 
     const double *y1() const;
-    void y1(double value);
+    void y1(double const &value);
 
     const double *y2() const;
-    void y2(double value);
+    void y2(double const &value);
 
     const double *y3() const;
-    void y3(double value);
+    void y3(double const &value);
 
     const double *z1() const;
-    void z1(double value);
+    void z1(double const &value);
 
     const double *z2() const;
-    void z2(double value);
+    void z2(double const &value);
 
     const double *z3() const;
-    void z3(double value);
+    void z3(double const &value);
 
     const double *determinant() const;
 
@@ -45,27 +45,27 @@ public:
 
     void identity();
 
-    void multiplyByScalar(double scalar);
+    void multiplyByScalar(double const &scalar);
 
-    void multiplyByMatrix(Matrix3D matrix);
+    void multiplyByMatrix(Matrix3D const &matrix);
 
-    void rotateAboutX(float degrees);
+    void rotateAboutX(float const &degrees);
 
-    void rotateAboutY(float degrees);
+    void rotateAboutY(float const &degrees);
 
-    void rotateAboutZ(float degrees);
+    void rotateAboutZ(float const &degrees);
 
-	void rotateAbout(Vector3D vector, float degrees);
+	void rotateAbout(Vector3D const &vector, float const &degrees);
 
-	void scaleAlong(Vector3D vector, float factor);
+	void scaleAlong(Vector3D const &vector, float const &factor);
 
     void inverse();
 
     Matrix3D clone() const;
 
-    bool isClose(Matrix3D matrix, unsigned int precision) const;
+    bool isClose(Matrix3D const &matrix, unsigned int const &precision) const;
 
-    bool isEqual(Matrix3D matrix) const;
+    bool isEqual(Matrix3D const &matrix) const;
 
 	bool isOrthogonal() const;
 
@@ -86,11 +86,11 @@ private:
 
     void _checkIfDeterminantNeedUpdateAfterRotation() const;
 
-	void _checkUnitVector(Vector3D vector) const;
+	void _checkUnitVector(Vector3D const &vector) const;
 
     void _checkNonZeroDeterminant() const;
 
-    bool _areClose(double value1, double value2, int factor) const;
+    bool _areClose(double const &value1, double const &value2, int const &factor) const;
 
 	void _performGrandSchmidtOrthogonalizingAlgorithm();
 
