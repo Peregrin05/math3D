@@ -14,6 +14,9 @@ const double Z2 = 2;
 const double X3 = 2;
 const double Y3 = 1;
 const double Z3 = 3;
+const double XT = 3;
+const double YT = 4;
+const double ZT = 5;
 
 double const P1 = 3;
 double const Q1 = 4;
@@ -166,14 +169,8 @@ double _dotProd(const array<double const, 3> v1, array<double const, 3> v2) {
     return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
 }
 
-// TODO find solution
-/*void _assertSettingPropertyChangesDeterminant(string property) {
-    double determinant(matrix.determinant);
-    matrix[property] += 1;
-    ASSERT_NE(determinant, matrix.determinant);
-}*/
-
 TEST_F(Matrix3DTest, ConstructorSavesParams) {
+	matrix = Matrix3D(X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3, XT, YT, ZT);
     ASSERT_EQ(X1, *matrix.x1());
     ASSERT_EQ(X2, *matrix.x2());
     ASSERT_EQ(X3, *matrix.x3());
@@ -183,6 +180,9 @@ TEST_F(Matrix3DTest, ConstructorSavesParams) {
     ASSERT_EQ(Z1, *matrix.z1());
     ASSERT_EQ(Z2, *matrix.z2());
     ASSERT_EQ(Z3, *matrix.z3());
+    ASSERT_EQ(XT, *matrix.xt());
+    ASSERT_EQ(YT, *matrix.yt());
+    ASSERT_EQ(ZT, *matrix.zt());
 }
 
 TEST_F(Matrix3DTest, GetterSetter) {
@@ -195,6 +195,9 @@ TEST_F(Matrix3DTest, GetterSetter) {
     matrix.x3(VALUE);
     matrix.y3(VALUE);
     matrix.z3(VALUE);
+    matrix.xt(VALUE);
+    matrix.yt(VALUE);
+    matrix.zt(VALUE);
 
     ASSERT_EQ(VALUE, *matrix.x1());
     ASSERT_EQ(VALUE, *matrix.y1());
@@ -205,6 +208,9 @@ TEST_F(Matrix3DTest, GetterSetter) {
     ASSERT_EQ(VALUE, *matrix.x3());
     ASSERT_EQ(VALUE, *matrix.y3());
     ASSERT_EQ(VALUE, *matrix.z3());
+    ASSERT_EQ(VALUE, *matrix.xt());
+    ASSERT_EQ(VALUE, *matrix.yt());
+    ASSERT_EQ(VALUE, *matrix.zt());
 }
 
 TEST_F(Matrix3DTest, Transpose) {
@@ -261,12 +267,17 @@ TEST_F(IdentityMatrixTest, WhenRotatingAlongNotUnitVector_throwException) {
 
 TEST_F(IdentityMatrixTest, ScaleAlong) {
 	scaleIdentityMatrixAlongArbitraryVector();
-	_assertClose(identityMatrix, 1.285, -0.571, 0.857, -0.571, 2.145, -1.716, 0.857, -1.716, 3.573);
+	_assertClose(identityMatrix, 1.285, 0, 0, 0, 2.145, 0, 0, 0, 3.573);
 }
 
 //[Test(expects="errors.NotUnitVectorError")]
 TEST_F(IdentityMatrixTest, WhenScalingAlongNotUnitVector_throwException) {
 	ASSERT_ANY_THROW(scaleIdentityMatrixAlongArbitraryVector(2));
+}
+
+TEST_F(Matrix3DTest, Scale) {
+	matrix.scale(2, 4, 6);
+	_assertEquals(matrix, X1 * 2, Y1 * 2, Z1 * 2, X2 * 4, Y2 * 4, Z2 * 4, X3 * 6, Y3 * 6, Z3 * 6);
 }
 
 TEST_F(Matrix3DTest, Determinant) {
@@ -275,15 +286,6 @@ TEST_F(Matrix3DTest, Determinant) {
 }
 
 TEST_F(MatrixDeterminantIsUpdatedTest, AfterXYZIsChanged) {
-	/*_assertSettingPropertyChangesDeterminant("x1");
-	_assertSettingPropertyChangesDeterminant("y1");
-	_assertSettingPropertyChangesDeterminant("z1");
-	_assertSettingPropertyChangesDeterminant("x2");
-	_assertSettingPropertyChangesDeterminant("y2");
-	_assertSettingPropertyChangesDeterminant("z2");
-	_assertSettingPropertyChangesDeterminant("x3");
-	_assertSettingPropertyChangesDeterminant("y3");
-	_assertSettingPropertyChangesDeterminant("z3");*/
 	matrix.x1(*matrix.x1() + 1);
 	assertUpdated();
 	SetUp();
@@ -383,7 +385,6 @@ TEST_F(Matrix3DTest, SwappingMatrixRows_negatesDeterminant) {
 	matrix.z2(Z1);
 	ASSERT_THAT(-*matrix.determinant(), Eq(oldDeterminant));
 }
-
 
 TEST_F(Matrix3DTest, IsEqual) {
 	Matrix3D matrix2 = matrix.clone();
@@ -493,4 +494,51 @@ TEST_F(Matrix3DTest, OrthogonalizeArbitraryMatrix) {
 TEST_F(MatrixDeterminantIsUpdatedTest, Orthogonalize) {
 	matrix.orthogonalize();
 	assertUpdated();
+}
+
+// TODO: implement 4x4 matrix transformation on p.182
+// TODO: implement perspective projection on p.188
+TEST_F(Matrix3DTest, TranslateSavesGivenValues) {
+	matrix.translate(XT, YT, ZT);
+	ASSERT_THAT(*matrix.xt(), Eq(XT));
+	ASSERT_THAT(*matrix.yt(), Eq(YT));
+	ASSERT_THAT(*matrix.zt(), Eq(ZT));
+}
+
+TEST_F(Matrix3DTest, SimpleRotationTransform) {
+	Vector3D vector(1, 0, 0);
+	matrix = Matrix3D();
+	matrix.rotateAboutZ(30);
+	matrix.transform(vector);
+	ASSERT_THAT(*vector.y(), Eq(sin(30 * M_PI / 180)));
+	ASSERT_THAT(*vector.x(), Eq(cos(30 * M_PI / 180)));
+}
+
+TEST_F(Matrix3DTest, SimpleScaleTransform) {
+	Vector3D vector(1, 1, 0);
+	matrix = Matrix3D();
+	matrix.scaleAlong(1, 0, 0, 0);
+	matrix.transform(vector);
+	ASSERT_THAT(*vector.y(), Eq(1));
+	ASSERT_THAT(*vector.x(), Eq(0));
+}
+
+TEST_F(Matrix3DTest, SimpleTranslatePointTransform) {
+	Vector3D vector(1, 1, 1, 1);
+	matrix = Matrix3D();
+	matrix.translate(2, 3, 4);
+	matrix.transform(vector);
+	ASSERT_THAT(*vector.x(), Eq(3));
+	ASSERT_THAT(*vector.y(), Eq(4));
+	ASSERT_THAT(*vector.z(), Eq(5));
+}
+
+TEST_F(Matrix3DTest, SimpleTranslateVectorTransform) {
+	Vector3D vector(1, 1, 1, 0);
+	matrix = Matrix3D();
+	matrix.translate(2, 3, 4);
+	matrix.transform(vector);
+	ASSERT_THAT(*vector.x(), Eq(1));
+	ASSERT_THAT(*vector.y(), Eq(1));
+	ASSERT_THAT(*vector.z(), Eq(1));
 }

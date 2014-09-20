@@ -9,8 +9,11 @@ class Vector3D;
 class Matrix3D {
 
 public:
-    Matrix3D(double const &x1 = 1, double const &y1 = 0, double const &z1 = 0, double const &x2 = 0, double const &y2 = 1, double const &z2 = 0,
-			double const &x3 = 0, double const &y3 = 0, double const &z3 = 1);
+    explicit Matrix3D(double const &x1 = 1, double const &y1 = 0, double const &z1 = 0, double const &x2 = 0,
+			double const &y2 = 1, double const &z2 = 0, double const &x3 = 0, double const &y3 = 0,
+			double const &z3 = 1, double const &xt = 0, double const &yt = 0, double const &zt = 0);
+
+	static void multiplyVectorByMatrix(Vector3D &vector, const Matrix3D &matrix);
 
     const double *x1() const;
     void x1(double const &value);
@@ -39,6 +42,15 @@ public:
     const double *z3() const;
     void z3(double const &value);
 
+	const double *xt() const;
+	void xt(double const &value);
+
+	const double *yt() const;
+	void yt(double const &value);
+
+	const double *zt() const;
+	void zt(double const &value);
+
     const double *determinant() const;
 
     void transpose();
@@ -58,6 +70,9 @@ public:
 	void rotateAbout(Vector3D const &vector, float const &degrees);
 
 	void scaleAlong(Vector3D const &vector, float const &factor);
+	void scaleAlong(const double &x, const double &y, const double &z, float const &factor);
+
+	void scale(const double &scaleX, const double &scaleY, const double &scaleZ);
 
     void inverse();
 
@@ -71,6 +86,10 @@ public:
 
 	void orthogonalize();
 
+	void translate(double const &xt, double const &yt, double const &zt);
+
+	void transform(Vector3D &vector) const;
+
 private:
     double _x1;
     double _x2;
@@ -81,12 +100,16 @@ private:
     double _z1;
     double _z2;
     double _z3;
+	double _xt;
+	double _yt;
+	double _zt;
     mutable double _determinant;
     mutable bool _detNeedsUpdate = true;
 
     void _checkIfDeterminantNeedUpdateAfterRotation() const;
 
 	void _checkUnitVector(Vector3D const &vector) const;
+	void _checkUnitVector(const double &x, const double &y, const double &z) const;
 
     void _checkNonZeroDeterminant() const;
 

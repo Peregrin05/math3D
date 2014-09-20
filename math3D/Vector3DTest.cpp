@@ -1,6 +1,9 @@
 #include <math.h>
+#include <gmock/gmock-matchers.h>
 #include "gtest/gtest.h"
 #include "Vector3D.h"
+
+using namespace testing;
 
 const double VALUE = 5;
 const double XV1 = 2;
@@ -153,6 +156,13 @@ TEST_F(Vector3DTest, SettingZ_updatesLength) {
     ASSERT_NE(oldLength, *vector.length());
 }
 
+TEST_F(Vector3DTest, SettingW_doesNotUpdateLength) {
+	double oldLength(*vector.length());
+	vector.w(*vector.w() + 1);
+
+	ASSERT_THAT(*vector.length(), Eq(oldLength));
+}
+
 TEST_F(Vector3DTest, MultiplyByScalar) {
     int multiplier(5);
 
@@ -279,3 +289,31 @@ TEST_F(VectorWithMatrixTest, AfterMultiplyByMatrix_lengthIsUpdated) {
     vector.multiplyByMatrix(matrix);
     ASSERT_NE(oldLength, *vector.length());
 }
+
+TEST_F(VectorWithMatrixTest, bla) {
+	const int xt = 4;
+	const int yt = 5;
+	const int zt = 6;
+	matrix.translate(xt, yt, zt);
+	vector.multiplyByMatrix(matrix);
+
+	const double x = XV1 * X1 + YV1 * X2 + ZV1 * X3;
+	const double y = XV1 * Y1 + YV1 * Y2 + ZV1 * Y3;
+	const double z = XV1 * Z1 + YV1 * Z2 + ZV1 * Z3;
+	assertEquals(vector, x + xt, y + yt, z + zt);
+}
+
+TEST_F(VectorWithMatrixTest, bla2) {
+	const int xt = 4;
+	const int yt = 5;
+	const int zt = 6;
+	matrix.translate(xt, yt, zt);
+	vector.w(0);
+	vector.multiplyByMatrix(matrix);
+
+	const double x = XV1 * X1 + YV1 * X2 + ZV1 * X3;
+	const double y = XV1 * Y1 + YV1 * Y2 + ZV1 * Y3;
+	const double z = XV1 * Z1 + YV1 * Z2 + ZV1 * Z3;
+	assertEquals(vector, x, y, z);
+}
+

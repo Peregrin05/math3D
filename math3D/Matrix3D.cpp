@@ -7,8 +7,9 @@ static float const ORTHOGONALIZE_FRACTION = 0.25;
 Vector3D _deriveBasisVector(Vector3D const &v1, Vector3D const &v2, Vector3D const &v3) ;
 
 Matrix3D::Matrix3D(double const &x1, double const &y1, double const &z1, double const &x2, double const &y2,
-		double const &z2, double const &x3, double const &y3, double const &z3) :
-        _x1(x1), _y1(y1), _z1(z1), _x2(x2), _y2(y2), _z2(z2), _x3(x3), _y3(y3), _z3(z3) {};
+		double const &z2, double const &x3, double const &y3, double const &z3, double const &xt, double const &yt,
+		double const &zt) :
+        _x1(x1), _y1(y1), _z1(z1), _x2(x2), _y2(y2), _z2(z2), _x3(x3), _y3(y3), _z3(z3), _xt(xt), _yt(yt), _zt(zt) {};
 
 const double *Matrix3D::x1() const {
     return &_x1;
@@ -44,6 +45,18 @@ const double *Matrix3D::z2() const {
 
 const double *Matrix3D::z3() const {
     return &_z3;
+}
+
+const double *Matrix3D::xt() const {
+	return &_xt;
+}
+
+const double *Matrix3D::yt() const {
+	return &_yt;
+}
+
+const double *Matrix3D::zt() const {
+	return &_zt;
 }
 
 void Matrix3D::x1(double const &value) {
@@ -89,6 +102,18 @@ void Matrix3D::z2(double const &value) {
 void Matrix3D::z3(double const &value) {
     _z3 = value;
     _detNeedsUpdate = true;
+}
+
+void Matrix3D::xt(double const &value) {
+	_xt = value;
+}
+
+void Matrix3D::yt(double const &value) {
+	_yt = value;
+}
+
+void Matrix3D::zt(double const &value) {
+	_zt = value;
 }
 
 const double *Matrix3D::determinant() const {
@@ -220,24 +245,38 @@ void Matrix3D::rotateAbout(Vector3D const &vector, float const &degrees) {
 }
 
 void Matrix3D::scaleAlong(Vector3D const &vector, float const &factor) {
-    _checkUnitVector(vector);
-    const double *vx = vector.x();
-    const double *vy = vector.y();
-    const double *vz = vector.z();
-    float facOp = factor - 1;
-    double y1x2 = facOp * *vx * *vy;
-    double z1x3 = facOp * *vx * *vz;
-    double z2y3 = facOp * *vy * *vz;
-    _x1 = 1 + facOp * *vx * *vx;
-    _y1 = y1x2;
-    _z1 = z1x3;
-    _x2 = y1x2;
-    _y2 = 1 + facOp * *vy * *vy;
-    _z2 = z2y3;
-    _x3 = z1x3;
-    _y3 = z2y3;
-    _z3 = 1 + facOp * *vz * *vz;
-    _detNeedsUpdate = true;
+	scaleAlong(*vector.x(), *vector.y(), *vector.z(), factor);
+}
+
+void Matrix3D::scaleAlong(double const &x, double const &y, double const &z, float const &factor) {
+	_checkUnitVector(x, y, z);
+	float facOp = factor - 1;
+	double y1x2 = facOp * x * y;
+	double z1x3 = facOp * x * z;
+	double z2y3 = facOp * y * z;
+	_x1 *= 1 + facOp * x * x;
+	_y1 *= y1x2;
+	_z1 *= z1x3;
+	_x2 *= y1x2;
+	_y2 *= 1 + facOp * y * y;
+	_z2 *= z2y3;
+	_x3 *= z1x3;
+	_y3 *= z2y3;
+	_z3 *= 1 + facOp * z * z;
+	_detNeedsUpdate = true;
+}
+
+void Matrix3D::scale(const double &scaleX, const double &scaleY, const double &scaleZ) {
+	_x1 *= scaleX;
+	_y1 *= scaleX;
+	_z1 *= scaleX;
+	_x2 *= scaleY;
+	_y2 *= scaleY;
+	_z2 *= scaleY;
+	_x3 *= scaleZ;
+	_y3 *= scaleZ;
+	_z3 *= scaleZ;
+	_detNeedsUpdate = true;
 }
 
 void Matrix3D::inverse() {
@@ -271,7 +310,6 @@ bool Matrix3D::isEqual(Matrix3D const &matrix) const {
             *matrix.z3() == _z3;
 }
 
-// TODO why unsigned precision doesn't work?
 bool Matrix3D::isClose(Matrix3D const &matrix, unsigned int const &precision) const {
     int factor = (int) pow(10, (double) precision);
     return _areClose(*matrix.x1(), _x1, factor) && _areClose(*matrix.y1(), _y1, factor) && _areClose(*matrix.z1(), _z1,
@@ -280,33 +318,18 @@ bool Matrix3D::isClose(Matrix3D const &matrix, unsigned int const &precision) co
     factor) && _areClose(*matrix.y3(), _y3, factor) && _areClose(*matrix.z3(), _z3, factor);
 }
 
+void Matrix3D::translate(double const &xt, double const &yt, double const &zt) {
+	_xt = xt;
+	_yt = yt;
+	_zt = zt;
+}
+
+void Matrix3D::transform(Vector3D &vector) const {
+	multiplyVectorByMatrix(vector, *this);
+}
+
 Matrix3D Matrix3D::clone() const {
     return Matrix3D(_x1, _y1, _z1, _x2, _y2, _z2, _x3, _y3, _z3);
-}
-
-bool Matrix3D::_areClose(double const &value1, double const &value2, int const &factor) const {
-    return round(value1 * factor) == round(value2 * factor);
-}
-
-
-void Matrix3D::_checkIfDeterminantNeedUpdateAfterRotation() const {
-    if (!_detNeedsUpdate && _determinant != 1) {
-        _detNeedsUpdate = true;
-    }
-}
-
-void Matrix3D::_checkUnitVector(Vector3D const &vector) const {
-    if (*vector.length() != 1) {
-		throw std::runtime_error("Given vector is not a unit vector.");
-        // throw NotUnitVectorError();
-    }
-}
-
-void Matrix3D::_checkNonZeroDeterminant() const {
-    if (*determinant() == 0) {
-		throw std::runtime_error("Matrix's determinant must not be 0.");
-        // throw ZeroDeterminantMatrixError();
-    }
 }
 
 bool Matrix3D::isOrthogonal() const {
@@ -393,4 +416,46 @@ Vector3D _deriveBasisVector(Vector3D const &v1, Vector3D const &v2, Vector3D con
 	basis.subtract(v2Clone);
 	basis.subtract(v2Clone);
 	return basis;
+}
+
+bool Matrix3D::_areClose(double const &value1, double const &value2, int const &factor) const {
+	return round(value1 * factor) == round(value2 * factor);
+}
+
+
+void Matrix3D::_checkIfDeterminantNeedUpdateAfterRotation() const {
+	if (!_detNeedsUpdate && _determinant != 1) {
+		_detNeedsUpdate = true;
+	}
+}
+
+void Matrix3D::_checkUnitVector(Vector3D const &vector) const {
+	if (*vector.length() != 1) {
+		throw std::runtime_error("Given vector is not a unit vector.");
+		// throw NotUnitVectorError();
+	}
+}
+
+void Matrix3D::_checkUnitVector(const double &x, const double &y, const double &z) const {
+	if (sqrt(x * x + y * y + z * z) != 1) {
+		throw std::runtime_error("Given vector is no a unit vector.");
+	}
+}
+
+void Matrix3D::_checkNonZeroDeterminant() const {
+	if (*determinant() == 0) {
+		throw std::runtime_error("Matrix's determinant must not be 0.");
+		// throw ZeroDeterminantMatrixError();
+	}
+}
+
+void Matrix3D::multiplyVectorByMatrix(Vector3D &vector, const Matrix3D &matrix) {
+	const double x = *vector.x();
+	const double y = *vector.y();
+	const double z = *vector.z();
+	double newX = x * *matrix.x1() + y * *matrix.x2() + z * *matrix.x3() + *vector.w() * *matrix.xt();
+	double newY = x * *matrix.y1() + y * *matrix.y2() + z * *matrix.y3() + *vector.w() * *matrix.yt();
+	vector.z(x * *matrix.z1() + y * *matrix.z2() + z * *matrix.z3() + *vector.w() * *matrix.zt());
+	vector.x(newX);
+	vector.y(newY);
 }

@@ -71,7 +71,6 @@ void Vector3D::z(double const &value) {
 
 void Vector3D::w(double const &value) {
     _w = value;
-    _lengthNeedsUpdate = true;
 }
 
 const double *Vector3D::length() const {
@@ -104,12 +103,7 @@ void Vector3D::subtract(Vector3D const &vector) {
 }
 
 void Vector3D::multiplyByMatrix(Matrix3D const &matrix) {
-    double newX = _x * *matrix.x1() + _y * *matrix.x2() + _z * *matrix.x3();
-    double newY = _x * *matrix.y1() + _y * *matrix.y2() + _z * *matrix.y3();
-    _z = _x * *matrix.z1() + _y * *matrix.z2() + _z * *matrix.z3();
-    _x = newX;
-    _y = newY;
-    _lengthNeedsUpdate = true;
+	Matrix3D::multiplyVectorByMatrix(*this, matrix);
 }
 
 // TODO should return interface
