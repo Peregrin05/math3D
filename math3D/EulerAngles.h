@@ -6,29 +6,29 @@ class EulerAngles {
 public:
 	EulerAngles(float const &heading = 0, float const &pitch = 0, float const &bank = 0);
 
-	const double *heading() const {
+	float const * heading() {
 		return &_heading;
 	}
-	void heading(double const &value);
+	void heading(float const &value);
 
-	const double *pitch() const {
+	float const * pitch() {
 		return &_pitch;
 	}
-	void pitch(double const &value);
+	void pitch(float const &value);
 
-	const double *bank() const {
+	float const * bank() {
 		return &_bank;
 	}
-	void bank(double const &value);
+	void bank(float const &value);
 
 	bool isCanonical() const;
 
 	void canonize();
 
 private:
-	double _heading;
-	double _pitch;
-	double _bank;
+	float _heading;
+	float _pitch;
+	float _bank;
 };
 
 

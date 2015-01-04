@@ -1,22 +1,22 @@
 #include <math.h>
 #include "EulerAngles.h"
 
-double _wrap180(double theta);
+float _wrap180(float theta);
 
 const static double pi = 180;
 const static double pi2 = 360;
 
 EulerAngles::EulerAngles(float const &heading, float const &pitch, float const &bank) : _heading(heading), _pitch(pitch), _bank(bank) {};
 
-void EulerAngles::heading(double const &value) {
+void EulerAngles::heading(float const &value) {
 	_heading = value;
 }
 
-void EulerAngles::pitch(double const &value) {
+void EulerAngles::pitch(float const &value) {
 	_pitch = value;
 }
 
-void EulerAngles::bank(double const &value) {
+void EulerAngles::bank(float const &value) {
 	_bank = value;
 }
 
@@ -78,7 +78,7 @@ void EulerAngles::canonize() {
 	}
 }
 
-double _wrap180(double theta) {
+float _wrap180(float theta) {
 	// Check if already in range
 	if (theta > pi || theta <= -pi) {
 		// out of range. Determine how many "revolutions" we need to add

@@ -21,4 +21,5 @@ TEST_F(OrientationTest, GetShortestDifference) {
 	assertShortestDifference(-170, 170, -20);
 	assertShortestDifference(-90, 45, 135);
 	assertShortestDifference(0, 90, 90);
+	assertShortestDifference(-90, -150, -60);
 }

@@ -73,7 +73,7 @@ TEST_F(EulerAnglesTest, IsCanonicalFalse) {
 
     reset();
 
-    eulerAngles.pitch(-90.01);
+    eulerAngles.pitch(-90.01f);
     ASSERT_FALSE(eulerAngles.isCanonical());
 
     eulerAngles.pitch(90.01);
@@ -89,7 +89,7 @@ TEST_F(EulerAnglesTest, IsCanonicalFalse) {
 }
 
 TEST_F(EulerAnglesTest, IsCanonicalTrue) {
-    eulerAngles.heading(-179.9);
+    eulerAngles.heading(-179.9f);
     ASSERT_TRUE(eulerAngles.isCanonical());
 
     eulerAngles.heading(180);
@@ -105,7 +105,7 @@ TEST_F(EulerAnglesTest, IsCanonicalTrue) {
 
     reset();
 
-    eulerAngles.bank(-179.9);
+    eulerAngles.bank(-179.9f);
     ASSERT_TRUE(eulerAngles.isCanonical());
 
     eulerAngles.bank(180);
