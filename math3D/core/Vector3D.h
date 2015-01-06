@@ -41,11 +41,25 @@ public:
 
     void subtract(Vector3D const &vector);
 
-    bool isEqualTo(Vector3D const &vector);
+    bool isEqualTo(Vector3D const &vector) const;
 
     void multiplyByMatrix(Matrix3D const &matrix);
 
     Vector3D clone() const;
+
+    double operator*(Vector3D& v) const;
+
+    Vector3D operator+(Vector3D& v) const;
+
+    Vector3D operator-(Vector3D& v) const;
+
+    Vector3D operator/(Vector3D& v) const;
+
+    Vector3D operator*(double& scalar) const;
+
+    Vector3D operator*(Matrix3D& m) const;
+
+    bool operator==(Vector3D& v) const;
 
 private:
     double _x;

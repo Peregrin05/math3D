@@ -115,7 +115,7 @@ Vector3D Vector3D::clone() const {
     return cloneVector;
 }
 
-bool Vector3D::isEqualTo(Vector3D const &vector) {
+bool Vector3D::isEqualTo(Vector3D const &vector) const {
     return *vector.x() == _x && *vector.y() == _y && *vector.z() == _z && *vector.w() == _w;
 }
 
@@ -146,4 +146,40 @@ void Vector3D::normalize() {
 
 bool Vector3D::_isZero() {
     return _x == 0 && _y == 0 && _z == 0;;
+}
+
+double Vector3D::operator*(Vector3D &v) const {
+    return dotProduct(*this, v);
+}
+
+Vector3D Vector3D::operator+(Vector3D &v) const {
+    Vector3D resultVector = *this;
+    resultVector.add(v);
+    return resultVector;
+}
+
+Vector3D Vector3D::operator/(Vector3D &v) const {
+    return Vector3D::crossProduct(*this, v);
+}
+
+Vector3D Vector3D::operator*(double &scalar) const {
+    Vector3D resultVector = *this;
+    resultVector.multiplyByScalar(scalar);
+    return resultVector;
+}
+
+Vector3D Vector3D::operator-(Vector3D &v) const {
+    Vector3D resultVector = *this;
+    resultVector.subtract(v);
+    return resultVector;
+}
+
+bool Vector3D::operator==(Vector3D &v) const {
+    return isEqualTo(v);
+}
+
+Vector3D Vector3D::operator*(Matrix3D &m) const {
+    Vector3D resultVector = *this;
+    resultVector.multiplyByMatrix(m);
+    return resultVector;
 }
