@@ -2,8 +2,12 @@
 #define __EulerAngles_H_
 
 
+#include "Matrix3D.h"
+
 class EulerAngles {
 public:
+	static EulerAngles fromMatrix(Matrix3D &matrix);
+
 	EulerAngles(float const &heading = 0, float const &pitch = 0, float const &bank = 0);
 
 	float const * heading() {
@@ -24,6 +28,10 @@ public:
 	bool isCanonical() const;
 
 	void canonize();
+
+	Matrix3D toUprightMatrix();
+
+	Matrix3D toObjectMatrix();
 
 private:
 	float _heading;
