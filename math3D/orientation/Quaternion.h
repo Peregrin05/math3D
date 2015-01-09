@@ -12,7 +12,9 @@ public:
 
 	Quaternion(float const &theta = 0, Vector3D const &v = Vector3D(0,0,0));
 
-	Quaternion(double const &w = 1, double const &x = 0, double const &y = 0, double const &z = 0);
+	Quaternion(double const &w, double const &x = 0, double const &y = 0, double const &z = 0);
+
+	Quaternion();
 
 	double const *w() const {
 		return &_w;

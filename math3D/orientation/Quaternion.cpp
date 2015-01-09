@@ -17,6 +17,8 @@ Quaternion::Quaternion(float const &theta, Vector3D const &v) {
 
 Quaternion::Quaternion(double const &w, double const &x, double const &y, double const &z): _w(w), _x(x), _y(y), _z(z) {}
 
+Quaternion::Quaternion(): Quaternion(1, 0, 0, 0) {}
+
 void Quaternion::w(double const &value) {
 	_w = value;
 }
@@ -40,14 +42,12 @@ void Quaternion::invert() {
 }
 
 Quaternion Quaternion::operator*(const Quaternion &q) const {
-	// TODO: remove this call to constructor
-	Quaternion resultQuaternion(1, 0, 0, 0);
-	resultQuaternion._w = _w * q._w - _x * q._x - _y * q._y - _z * q._z;
-	resultQuaternion._x = _w * q._x + _x * q._w + _y * q._z - _z * q._y;
-	resultQuaternion._y = _w * q._y + _y * q._w + _z * q._x - _x * q._z;
-	resultQuaternion._z = _w * q._z + _z * q._w + _x * q._y - _y * q._x;
+	double w = _w * q._w - _x * q._x - _y * q._y - _z * q._z;
+	double x = _w * q._x + _x * q._w + _y * q._z - _z * q._y;
+	double y = _w * q._y + _y * q._w + _z * q._x - _x * q._z;
+	double z = _w * q._z + _z * q._w + _x * q._y - _y * q._x;
 
-	return resultQuaternion;
+	return Quaternion(w, x, y, z);
 }
 
 Quaternion Quaternion::operator*(const double &scalar) const {
