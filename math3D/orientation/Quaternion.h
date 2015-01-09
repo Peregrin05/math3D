@@ -8,6 +8,8 @@ class Quaternion {
 public:
 	Quaternion static getDifference(Quaternion& q1, Quaternion& q2);
 
+	Quaternion static fromMatrix(Matrix3D& matrix);
+
 	double static dotProduct(Quaternion& q1, Quaternion& q2);
 
 	Quaternion(float const &theta = 0, Vector3D const &v = Vector3D(0,0,0));
@@ -45,6 +47,8 @@ public:
 	Quaternion exp(float &exponent) const;
 
 	Quaternion slerp(Quaternion&to, float fraction) const;
+
+	Matrix3D toMatrix() const;
 
 private:
 	double _w;
