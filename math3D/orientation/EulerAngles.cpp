@@ -170,3 +170,37 @@ EulerAngles EulerAngles::fromMatrix(Matrix3D &matrix) {
 	}
 	return EulerAngles(h, p, b);
 }
+
+Quaternion EulerAngles::toUprightQuaternion() const {
+	double h = _heading * M_PI / 180;
+	double p = _pitch * M_PI / 180;
+	double b = _bank * M_PI / 180;
+	double ch = cos(h / 2);
+	double cp = cos(p / 2);
+	double cb = cos(b / 2);
+	double sh = sin(h / 2);
+	double sp = sin(p / 2);
+	double sb = sin(b / 2);
+	double w = ch * cp * cb + sh * sp * sb;
+	double x = ch * sp * cb + sh * cp * sb;
+	double y = sh * cp * cb - ch * sp * sb;
+	double z = ch * cp * sb - sh * sp * cb;
+	return Quaternion(w, x, y, z);
+}
+
+Quaternion EulerAngles::toObjectQuaternion() const {
+	double h = _heading * M_PI / 180;
+	double p = _pitch * M_PI / 180;
+	double b = _bank * M_PI / 180;
+	double ch = cos(h / 2);
+	double cp = cos(p / 2);
+	double cb = cos(b / 2);
+	double sh = sin(h / 2);
+	double sp = sin(p / 2);
+	double sb = sin(b / 2);
+	double w = ch * cp * cb + sh * sp * sb;
+	double x = -ch * sp * cb - sh * cp * sb;
+	double y = ch * sp * sb - sh * cp * cb;
+	double z = sh * sp * cb - ch * cp * sb;
+	return Quaternion(w, x, y, z);
+}

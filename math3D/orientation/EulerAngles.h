@@ -3,6 +3,9 @@
 
 
 #include "Matrix3D.h"
+#include "Quaternion.h"
+
+class Quaternion;
 
 class EulerAngles {
 public:
@@ -32,6 +35,10 @@ public:
 	Matrix3D toUprightMatrix();
 
 	Matrix3D toObjectMatrix();
+
+	Quaternion toUprightQuaternion() const;
+
+	Quaternion toObjectQuaternion() const;
 
 private:
 	float _heading;

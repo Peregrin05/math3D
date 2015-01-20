@@ -210,3 +210,47 @@ Quaternion Quaternion::fromMatrix(Matrix3D &matrix) {
 	}
 	return Quaternion(qw, qx, qy, qz);
 }
+
+EulerAngles Quaternion::uprightToEulerAngles() const {
+	float h, p, b;
+
+	// extract sin(pitch)
+	float sp = -2 * (_y * _z - _w * _x);
+
+	// Check for Gimbal lock, giving slight tolerance for numerical imprecision
+	if (fabs(sp) > 0.9999f) {
+		// looking straight up tor down
+		p = 1.570796f * sp; // pi / 2
+		// compute heading, slam bank to zero
+		h = atan2(-_x * _z + _w * _z, 0.5f - _y * _y - _z * _z);
+		b = 0;
+	} else {
+		// compute angles
+		p = asin(sp);
+		h = atan2(_x * _z + _w * _y, 0.5f - _x * _x - _y * _y);
+		b = atan2(_x * _y + _w * _z, 0.5f - _x * _x - _z * _z);
+	}
+	return EulerAngles(p, h, b);
+}
+
+EulerAngles Quaternion::objectToEulerAngles() const {
+	float h, p, b;
+
+	// extract sin(pitch)
+	float sp = -2 * (_y * _z + _w * _x);
+
+	// Check for Gimbal lock, giving slight tolerance for numerical imprecision
+	if (fabs(sp) > 0.9999f) {
+		// looking straight up tor down
+		p = 1.570796f * sp; // pi / 2
+		// compute heading, slam bank to zero
+		h = atan2(-_x * _z - _w * _y, 0.5f - _y * _y - _z * _z);
+		b = 0;
+	} else {
+		// compute angles
+		p = asin(sp);
+		h = atan2(_x * _z - _w * _y, 0.5f - _x * _x - _y * _y);
+		b = atan2(_x * _y - _w * _z, 0.5f - _x * _x - _z * _z);
+	}
+	return EulerAngles(p, h, b);
+}

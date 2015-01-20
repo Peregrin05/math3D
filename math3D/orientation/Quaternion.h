@@ -3,6 +3,9 @@
 
 
 #include "Vector3D.h"
+#include "EulerAngles.h"
+
+class EulerAngles;
 
 class Quaternion {
 public:
@@ -49,6 +52,10 @@ public:
 	Quaternion slerp(Quaternion&to, float fraction) const;
 
 	Matrix3D toMatrix() const;
+
+	EulerAngles uprightToEulerAngles() const;
+
+	EulerAngles objectToEulerAngles() const;
 
 private:
 	double _w;
