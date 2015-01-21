@@ -4,20 +4,31 @@
 
 using namespace testing;
 
+double const DELTA = 0.006;
+
 class EulerAnglesTest : public testing::Test {
 public:
-    EulerAngles eulerAngles;
+	EulerAngles eulerAngles;
 
-    void SetUp() override {
-        reset();
-    }
+	void SetUp() override {
+		reset();
+	}
 
-    void reset() {
-        eulerAngles.heading(0);
-        eulerAngles.pitch(0);
-        eulerAngles.bank(0);
-    }
+	void set(float const h, float const p, float const b) {
+		eulerAngles.heading(h);
+		eulerAngles.pitch(p);
+		eulerAngles.bank(b);
+	}
 
+	void reset() {
+		eulerAngles.heading(0);
+		eulerAngles.pitch(0);
+		eulerAngles.bank(0);
+	}
+};
+
+class EulerAnglesCanonizeTest : public EulerAnglesTest {
+public :
     void assertCanonizeHeading(double initHeading, double expHeading) {
         eulerAngles.heading(initHeading);
         eulerAngles.canonize();
@@ -64,7 +75,29 @@ public:
     }
 };
 
-TEST_F(EulerAnglesTest, IsCanonicalFalse) {
+class EulerAnglesConvertToMatrixTest : public EulerAnglesTest {
+public:
+	void assertMatrix(double x1, double y1, double z1, double x2, double y2, double z2, double x3,
+			double y3, double z3, double multiplier = 1) {
+		assertClose(eulerAngles.toUprightMatrix(), x1, y1, z1, x2, y2, z2, x3, y3, z3);
+		assertClose(eulerAngles.toObjectMatrix(), x1, x2, x3, y1, y2, y3, z1, z2, z3);
+	}
+
+	void assertClose(Matrix3D matrix, double x1, double y1, double z1, double x2, double y2, double z2, double x3,
+			double y3, double z3, double multiplier = 1) {
+		ASSERT_THAT(*matrix.x1(), DoubleNear(x1 * multiplier, DELTA));
+		ASSERT_THAT(*matrix.y1(), DoubleNear(y1 * multiplier, DELTA));
+		ASSERT_THAT(*matrix.z1(), DoubleNear(z1 * multiplier, DELTA));
+		ASSERT_THAT(*matrix.x2(), DoubleNear(x2 * multiplier, DELTA));
+		ASSERT_THAT(*matrix.y2(), DoubleNear(y2 * multiplier, DELTA));
+		ASSERT_THAT(*matrix.z2(), DoubleNear(z2 * multiplier, DELTA));
+		ASSERT_THAT(*matrix.x3(), DoubleNear(x3 * multiplier, DELTA));
+		ASSERT_THAT(*matrix.y3(), DoubleNear(y3 * multiplier, DELTA));
+		ASSERT_THAT(*matrix.z3(), DoubleNear(z3 * multiplier, DELTA));
+	}
+};
+
+TEST_F(EulerAnglesCanonizeTest, IsCanonicalFalse) {
     eulerAngles.heading(-180);
     ASSERT_FALSE(eulerAngles.isCanonical());
 
@@ -88,7 +121,7 @@ TEST_F(EulerAnglesTest, IsCanonicalFalse) {
     ASSERT_FALSE(eulerAngles.isCanonical());
 }
 
-TEST_F(EulerAnglesTest, IsCanonicalTrue) {
+TEST_F(EulerAnglesCanonizeTest, IsCanonicalTrue) {
     eulerAngles.heading(-179.9f);
     ASSERT_TRUE(eulerAngles.isCanonical());
 
@@ -112,7 +145,7 @@ TEST_F(EulerAnglesTest, IsCanonicalTrue) {
     ASSERT_TRUE(eulerAngles.isCanonical());
 }
 
-TEST_F(EulerAnglesTest, IsCanonicalGimbalLock) {
+TEST_F(EulerAnglesCanonizeTest, IsCanonicalGimbalLock) {
     eulerAngles.pitch(-90);
     eulerAngles.bank(1);
     ASSERT_FALSE(eulerAngles.isCanonical());
@@ -121,7 +154,7 @@ TEST_F(EulerAnglesTest, IsCanonicalGimbalLock) {
     ASSERT_FALSE(eulerAngles.isCanonical());
 }
 
-TEST_F(EulerAnglesTest, CanonizeHeading) {
+TEST_F(EulerAnglesCanonizeTest, CanonizeHeading) {
     assertCanonizeHeading(10, 10);
     assertCanonizeHeading(380, 20);
     assertCanonizeHeading(-10, -10);
@@ -137,7 +170,7 @@ TEST_F(EulerAnglesTest, CanonizeHeading) {
     assertCanonizeHeading(-540, 180);
 }
 
-TEST_F(EulerAnglesTest, CanonizeBank) {
+TEST_F(EulerAnglesCanonizeTest, CanonizeBank) {
     assertCanonizeBank(10, 10);
     assertCanonizeBank(380, 20);
     assertCanonizeBank(-10, -10);
@@ -153,7 +186,7 @@ TEST_F(EulerAnglesTest, CanonizeBank) {
     assertCanonizeBank(-540, 180);
 }
 
-TEST_F(EulerAnglesTest, CanonizeInRangePitch) {
+TEST_F(EulerAnglesCanonizeTest, CanonizeInRangePitch) {
     assertCanonizePitch(0, 0);
     assertCanonizePitch(90, 90);
     assertCanonizePitch(80, 80);
@@ -169,7 +202,7 @@ TEST_F(EulerAnglesTest, CanonizeInRangePitch) {
     assertCanonizePitch(-810, -90); // -360 * 2
 }
 
-TEST_F(EulerAnglesTest, CanonizeOutOfRangePitch) {
+TEST_F(EulerAnglesCanonizeTest, CanonizeOutOfRangePitch) {
     assertCanonizeComplexPitch(135, 45);
     assertCanonizeComplexPitch(-135, -45);
     assertCanonizeComplexPitch(100, 80);
@@ -180,25 +213,25 @@ TEST_F(EulerAnglesTest, CanonizeOutOfRangePitch) {
     assertCanonizeComplexPitch(-180, 0);
 }
 
-TEST_F(EulerAnglesTest, CanonizeOutOfRangePitchWidthHeading) {
+TEST_F(EulerAnglesCanonizeTest, CanonizeOutOfRangePitchWidthHeading) {
     assertCanonizeComplex(90, 135, 0, -90, 45, 180);
     assertCanonizeComplex(-10, 100, 0, 170, 80, 180);
     assertCanonizeComplex(-135, 170, 0, 45, 10, 180);
 }
 
-TEST_F(EulerAnglesTest, CanonizeOutOfRangePitchWidthBank) {
+TEST_F(EulerAnglesCanonizeTest, CanonizeOutOfRangePitchWidthBank) {
     assertCanonizeComplex(0, 135, 90, 180, 45, -90);
     assertCanonizeComplex(0, 100, -10, 180, 80, 170);
     assertCanonizeComplex(0, 170, -135, 180, 10, 45);
 }
 
-TEST_F(EulerAnglesTest, CanonizeOutOfRangePitchWidthHeadingAndBank) {
+TEST_F(EulerAnglesCanonizeTest, CanonizeOutOfRangePitchWidthHeadingAndBank) {
     assertCanonizeComplex(10, 135, 90, -170, 45, -90);
     assertCanonizeComplex(110, 100, -10, -70, 80, 170);
     assertCanonizeComplex(-45, 170, -135, 135, 10, 45);
 }
 
-TEST_F(EulerAnglesTest, CanonizeGimbalLock) {
+TEST_F(EulerAnglesCanonizeTest, CanonizeGimbalLock) {
     assertCanonizeComplex(90, 90, 90, 180, 90, 0);
     assertCanonizeComplex(90, 90, -90, 0, 90, 0);
     assertCanonizeComplex(30, 90, 30, 60, 90, 0);
@@ -210,4 +243,31 @@ TEST_F(EulerAnglesTest, CanonizeGimbalLock) {
     assertCanonizeComplex(90, -90, -90, 180, -90, 0);
     assertCanonizeComplex(-45, -90, 180, 135, -90, 0);
     assertCanonizeComplex(-30, -90, 10, -40, -90, 0);
+}
+
+void trace(Matrix3D m) {
+	std::cout << "--------------------" << std::endl;
+	std::cout << *m.x1() << " | " << *m.y1() << " | " << *m.z1() << std::endl;
+	std::cout << *m.x2() << " | " << *m.y2() << " | " << *m.z2() << std::endl;
+	std::cout << *m.x3() << " | " << *m.y3() << " | " << *m.z3() << std::endl;
+}
+
+TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrix) {
+	set(0, 0, 0);
+	assertMatrix(1, 0, 0, 0, 1, 0, 0, 0, 1);
+
+	set(180, 45, 180);
+	assertMatrix(1, 0, 0, 0, -0.707, 0.707, 0, -0.707, -0.707);
+
+	set(-135, -45, 0);
+	assertMatrix(-0.707, 0, 0.707, 0.5, 0.707, 0.5, -0.5, 0.707, -0.5);
+
+	set(-45, -90, 0);
+	assertMatrix(0.707, 0, 0.707, 0.707, 0, -0.707, 0, 1, 0);
+
+	set(123, 33.5f, -32.7f);
+	assertMatrix(-0.713, -0.45, -0.538, 0.091, 0.702, -0.706, 0.696, -0.552, -0.46);
+
+	set(-30, 30, 70);
+	assertMatrix(0.061, 0.814, 0.578, -0.9, 0.296, -0.322, -0.433, -0.5, 0.75);
 }

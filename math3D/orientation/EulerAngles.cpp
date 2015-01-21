@@ -90,8 +90,8 @@ float _wrap180(float theta) {
 
 Matrix3D EulerAngles::toUprightMatrix() {
 	double h = _heading * M_PI / 180;
-	double p = _heading * M_PI / 180;
-	double b = _heading * M_PI / 180;
+	double p = _pitch * M_PI / 180;
+	double b = _bank * M_PI / 180;
 
 	double ch = cos(h);
 	double sh = sin(h);
@@ -115,8 +115,8 @@ Matrix3D EulerAngles::toUprightMatrix() {
 
 Matrix3D EulerAngles::toObjectMatrix() {
 	double h = _heading * M_PI / 180;
-	double p = _heading * M_PI / 180;
-	double b = _heading * M_PI / 180;
+	double p = _pitch * M_PI / 180;
+	double b = _bank * M_PI / 180;
 
 	double ch = cos(h);
 	double sh = sin(h);
@@ -132,7 +132,7 @@ Matrix3D EulerAngles::toObjectMatrix() {
 	double y2 = cb * cp;
 	double z2 = -sp;
 	double x3 = -sh * cb + ch * sp * sb;
-	double y3 = sb *sh + sh * sp * cb;
+	double y3 = sb * sh + ch * sp * cb;
 	double z3 = ch * cp;
 
 	return Matrix3D(x1, y1, z1, x2, y2, z2, x3, y3, z3);
