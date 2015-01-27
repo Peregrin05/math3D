@@ -84,16 +84,16 @@ public:
 	}
 
 	void assertClose(Matrix3D matrix, double x1, double y1, double z1, double x2, double y2, double z2, double x3,
-			double y3, double z3, double multiplier = 1) {
-		ASSERT_THAT(*matrix.x1(), DoubleNear(x1 * multiplier, DELTA));
-		ASSERT_THAT(*matrix.y1(), DoubleNear(y1 * multiplier, DELTA));
-		ASSERT_THAT(*matrix.z1(), DoubleNear(z1 * multiplier, DELTA));
-		ASSERT_THAT(*matrix.x2(), DoubleNear(x2 * multiplier, DELTA));
-		ASSERT_THAT(*matrix.y2(), DoubleNear(y2 * multiplier, DELTA));
-		ASSERT_THAT(*matrix.z2(), DoubleNear(z2 * multiplier, DELTA));
-		ASSERT_THAT(*matrix.x3(), DoubleNear(x3 * multiplier, DELTA));
-		ASSERT_THAT(*matrix.y3(), DoubleNear(y3 * multiplier, DELTA));
-		ASSERT_THAT(*matrix.z3(), DoubleNear(z3 * multiplier, DELTA));
+			double y3, double z3) {
+		ASSERT_THAT(*matrix.x1(), DoubleNear(x1, DELTA));
+		ASSERT_THAT(*matrix.y1(), DoubleNear(y1, DELTA));
+		ASSERT_THAT(*matrix.z1(), DoubleNear(z1, DELTA));
+		ASSERT_THAT(*matrix.x2(), DoubleNear(x2, DELTA));
+		ASSERT_THAT(*matrix.y2(), DoubleNear(y2, DELTA));
+		ASSERT_THAT(*matrix.z2(), DoubleNear(z2, DELTA));
+		ASSERT_THAT(*matrix.x3(), DoubleNear(x3, DELTA));
+		ASSERT_THAT(*matrix.y3(), DoubleNear(y3, DELTA));
+		ASSERT_THAT(*matrix.z3(), DoubleNear(z3, DELTA));
 	}
 };
 
@@ -245,13 +245,6 @@ TEST_F(EulerAnglesCanonizeTest, CanonizeGimbalLock) {
     assertCanonizeComplex(-30, -90, 10, -40, -90, 0);
 }
 
-void trace(Matrix3D m) {
-	std::cout << "--------------------" << std::endl;
-	std::cout << *m.x1() << " | " << *m.y1() << " | " << *m.z1() << std::endl;
-	std::cout << *m.x2() << " | " << *m.y2() << " | " << *m.z2() << std::endl;
-	std::cout << *m.x3() << " | " << *m.y3() << " | " << *m.z3() << std::endl;
-}
-
 TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrix) {
 	set(0, 0, 0);
 	assertMatrix(1, 0, 0, 0, 1, 0, 0, 0, 1);
@@ -270,4 +263,22 @@ TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrix) {
 
 	set(-30, 30, 70);
 	assertMatrix(0.061, 0.814, 0.578, -0.9, 0.296, -0.322, -0.433, -0.5, 0.75);
+}
+
+TEST_F(EulerAnglesConvertToMatrixTest, FromUprightMatrix) {
+	set(180, 45, 180);
+	Matrix3D matrix = eulerAngles.toUprightMatrix();
+	eulerAngles = EulerAngles::fromUprightMatrix(matrix);
+	ASSERT_THAT(*eulerAngles.heading(), FloatNear(180, DELTA));
+	ASSERT_THAT(*eulerAngles.pitch(), FloatNear(45, DELTA));
+	ASSERT_THAT(*eulerAngles.bank(), FloatNear(180, DELTA));
+}
+
+TEST_F(EulerAnglesConvertToMatrixTest, FromObjectMatrix) {
+	set(180, 45, 180);
+	Matrix3D oMatrix = eulerAngles.toObjectMatrix();
+	eulerAngles = EulerAngles::fromObjectMatrix(oMatrix);
+	ASSERT_THAT(*eulerAngles.heading(), FloatNear(180, DELTA));
+	ASSERT_THAT(*eulerAngles.pitch(), FloatNear(45, DELTA));
+	ASSERT_THAT(*eulerAngles.bank(), FloatNear(180, DELTA));
 }

@@ -138,15 +138,13 @@ Matrix3D EulerAngles::toObjectMatrix() {
 	return Matrix3D(x1, y1, z1, x2, y2, z2, x3, y3, z3);
 }
 
-EulerAngles EulerAngles::fromMatrix(Matrix3D &matrix) {
-	float x1, y1, z1, y2, x3, y3, z3;
-
+EulerAngles EulerAngles::fromUprightMatrix(const Matrix3D &matrix) {
 	// We will compute the Euler angle values in radians and store them here:
 	float h, p, b;
 
 	// Extract pitch from y3, being careful for domain errors with asin().
 	// We could have values slightly out of range due to floating point arithmetic
-	float sp = -y3;
+	float sp = -*matrix.y3();
 
 	if (sp <= -1.0f) {
 		p = -M_PI / 2;
@@ -161,14 +159,47 @@ EulerAngles EulerAngles::fromMatrix(Matrix3D &matrix) {
 		// We are looking straight up or down. 
 		// Slam bank to zero and just set heading
 		b = 0.0f;
-		h = atan2(-z1, x1);
+		h = atan2(-*matrix.z1(), *matrix.x1());
 	} else {
 		// Compute heading from z1 and z3
-		h = atan2(x3, z3);
+		h = atan2(*matrix.x3(), *matrix.z3());
 		// Compute bank from x1 and y2
-		b = atan2(y1, y2);
+		b = atan2(*matrix.y1(), *matrix.y2());
 	}
-	return EulerAngles(h, p, b);
+	double toGradMult = 180 / M_PI;
+	return EulerAngles(h * toGradMult, p * toGradMult, b * toGradMult);
+}
+
+EulerAngles EulerAngles::fromObjectMatrix(const Matrix3D &matrix) {
+	// We will compute the Euler angle values in radians and store them here:
+	float h, p, b;
+
+	// Extract pitch from y3, being careful for domain errors with asin().
+	// We could have values slightly out of range due to floating point arithmetic
+	float sp = -*matrix.z2();
+
+	if (sp <= -1.0f) {
+		p = -M_PI / 2;
+	} else if (sp >= 1.0f) {
+		p = M_PI / 2;
+	} else {
+		p = asin(sp);
+	}
+
+	// Check for the Gimbal lock case, giving a slight tolerance for numerical imprecision
+	if (fabs(sp) > 0.9999f) {
+		// We are looking straight up or down.
+		// Slam bank to zero and just set heading
+		b = 0.0f;
+		h = atan2(-*matrix.z1(), *matrix.x1());
+	} else {
+		// Compute heading from z1 and z3
+		h = atan2(*matrix.x3(), *matrix.z3());
+		// Compute bank from x1 and y2
+		b = atan2(*matrix.y1(), *matrix.y2());
+	}
+	double toGradMult = 180 / M_PI;
+	return EulerAngles(h * toGradMult, p * toGradMult, b * toGradMult);
 }
 
 Quaternion EulerAngles::toUprightQuaternion() const {

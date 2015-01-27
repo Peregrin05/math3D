@@ -9,7 +9,9 @@ class Quaternion;
 
 class EulerAngles {
 public:
-	static EulerAngles fromMatrix(Matrix3D &matrix);
+	static EulerAngles fromUprightMatrix(const Matrix3D &matrix);
+
+	static EulerAngles fromObjectMatrix(const Matrix3D &matrix);
 
 	EulerAngles(float const &heading = 0, float const &pitch = 0, float const &bank = 0);
 
