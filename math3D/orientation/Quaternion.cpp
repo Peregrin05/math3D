@@ -54,17 +54,17 @@ Quaternion Quaternion::operator*(const double &scalar) const {
 	return Quaternion(_w * scalar, _x * scalar, _y * scalar, _z * scalar);
 }
 
-Quaternion Quaternion::getDifference(Quaternion &q1, Quaternion &q2) {
+Quaternion Quaternion::getDifference(const Quaternion &q1, const Quaternion &q2) {
 	Quaternion inverse = q1;
 	inverse.invert();
 	return q2 * inverse;
 }
 
-double Quaternion::dotProduct(Quaternion &q1, Quaternion &q2) {
+double Quaternion::dotProduct(const Quaternion &q1, const Quaternion &q2) {
 	return q1._w * q2._w + q1._x * q2._x + q1._y * q2._y + q1._z * q2._z;
 }
 
-Quaternion Quaternion::exp(float &exponent) const {
+Quaternion Quaternion::exp(const double &exponent) const {
 	Quaternion expQuaternion = *this;
 	if (fabs(_w) < 0.9999f) {
 		double alpha = acos(_w);
@@ -79,7 +79,7 @@ Quaternion Quaternion::exp(float &exponent) const {
 	return expQuaternion;
 }
 
-Quaternion Quaternion::slerp(Quaternion &to, float fraction) const {
+Quaternion Quaternion::slerp(const Quaternion &to, const float fraction) const {
 	double w = to._w;
 	double x = to._x;
 	double y = to._y;
@@ -100,21 +100,21 @@ Quaternion Quaternion::slerp(Quaternion &to, float fraction) const {
 	double k0, k1;
 	if (cosOmega > 0.9999f) {
 		// Very close - just use linear interpolation
-		k0 = 1 - fraction;
+		k0 = 1.0f - fraction;
 		k1 = fraction;
 	} else {
 		// Compute the sin of the angle using the trig identity sin * 2(omega) + cos * 2(omega) = 1
-		double sinOmega = sqrt(1 - cosOmega * cosOmega);
+		double sinOmega = sqrt(1.0f - cosOmega * cosOmega);
 
 		// Compute the angle from its sin and cosine
 		double omega = atan2(sinOmega, cosOmega);
 
 		// Compute inverse of denominator, so we only have to divide once
-		double oneOverSinOmega = 1 / sinOmega;
+		double oneOverSinOmega = 1.0f / sinOmega;
 
 		// Compute interpolation parameters
-		k0 = sin((1 - fraction) * omega) * oneOverSinOmega;
-		k1 = sin(1 * omega) * oneOverSinOmega;
+		k0 = sin((1.0f - fraction) * omega) * oneOverSinOmega;
+		k1 = sin(fraction * omega) * oneOverSinOmega;
 	}
 
 	// interpolate
@@ -142,7 +142,7 @@ Matrix3D Quaternion::toMatrix() const {
 	return Matrix3D(x1, y1, z1, x2, y2, z2, x3, y3, z3);
 }
 
-Quaternion Quaternion::fromMatrix(Matrix3D &matrix) {
+Quaternion Quaternion::fromMatrix(const Matrix3D &matrix) {
 	double x1 = *matrix.x1();
 	double y1 = *matrix.y1();
 	double z1 = *matrix.z1();
@@ -222,7 +222,7 @@ EulerAngles Quaternion::uprightToEulerAngles() const {
 		// looking straight up tor down
 		p = 1.570796f * sp; // pi / 2
 		// compute heading, slam bank to zero
-		h = atan2(-_x * _z + _w * _z, 0.5f - _y * _y - _z * _z);
+		h = atan2(-_x * _z + _w * _y, 0.5f - _y * _y - _z * _z);
 		b = 0;
 	} else {
 		// compute angles
@@ -230,7 +230,8 @@ EulerAngles Quaternion::uprightToEulerAngles() const {
 		h = atan2(_x * _z + _w * _y, 0.5f - _x * _x - _y * _y);
 		b = atan2(_x * _y + _w * _z, 0.5f - _x * _x - _z * _z);
 	}
-	return EulerAngles(p, h, b);
+	double toGrads = 180 / M_PI;
+	return EulerAngles(h * toGrads, p * toGrads, b * toGrads);
 }
 
 EulerAngles Quaternion::objectToEulerAngles() const {
@@ -252,5 +253,6 @@ EulerAngles Quaternion::objectToEulerAngles() const {
 		h = atan2(_x * _z - _w * _y, 0.5f - _x * _x - _y * _y);
 		b = atan2(_x * _y - _w * _z, 0.5f - _x * _x - _z * _z);
 	}
-	return EulerAngles(p, h, b);
+	double toGrads = 180 / M_PI;
+	return EulerAngles(h * toGrads, p * toGrads, b * toGrads);
 }

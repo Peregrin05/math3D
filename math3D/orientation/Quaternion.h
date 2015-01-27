@@ -9,15 +9,15 @@ class EulerAngles;
 
 class Quaternion {
 public:
-	Quaternion static getDifference(Quaternion& q1, Quaternion& q2);
+	Quaternion static getDifference(const Quaternion& q1, const Quaternion& q2);
 
-	Quaternion static fromMatrix(Matrix3D& matrix);
+	Quaternion static fromMatrix(const Matrix3D& matrix);
 
-	double static dotProduct(Quaternion& q1, Quaternion& q2);
+	double static dotProduct(const Quaternion& q1, const Quaternion& q2);
 
-	Quaternion(float const &theta = 0, Vector3D const &v = Vector3D(0,0,0));
+	Quaternion(float const &theta, Vector3D const &v = Vector3D(0,0,0));
 
-	Quaternion(double const &w, double const &x = 0, double const &y = 0, double const &z = 0);
+	Quaternion(double const &w, double const &x, double const &y, double const &z);
 
 	Quaternion();
 
@@ -47,9 +47,9 @@ public:
 
 	Quaternion operator*(const double& scalar) const;
 
-	Quaternion exp(float &exponent) const;
+	Quaternion exp(double const &exponent) const;
 
-	Quaternion slerp(Quaternion&to, float fraction) const;
+	Quaternion slerp(const Quaternion&to, const float fraction) const;
 
 	Matrix3D toMatrix() const;
 
