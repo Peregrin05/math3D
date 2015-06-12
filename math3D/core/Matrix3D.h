@@ -9,76 +9,94 @@ class Vector3D;
 class Matrix3D {
 
 public:
-    explicit Matrix3D(double const &x1 = 1, double const &y1 = 0, double const &z1 = 0, double const &x2 = 0,
-			double const &y2 = 1, double const &z2 = 0, double const &x3 = 0, double const &y3 = 0,
-			double const &z3 = 1, double const &xt = 0, double const &yt = 0, double const &zt = 0);
+    explicit Matrix3D(float x1, float y1 = 0, float z1 = 0, float x2 = 0,
+			float y2 = 1, float z2 = 0, float x3 = 0, float y3 = 0,
+			float z3 = 1, float xt = 0, float yt = 0, float zt = 0);
+
+	Matrix3D();
 
 	static void multiplyVectorByMatrix(Vector3D &vector, const Matrix3D &matrix);
 
-    const double *x1() const;
-    void x1(double const &value);
+	static Matrix3D perspectiveProjection(float fovy, float aspectRatio, float near, float far);
 
-    const double *x2() const;
-    void x2(double const &value);
+	static Matrix3D orthographicProjection(float fovy, float aspectRatio, float near, float far);
 
-    const double *x3() const;
-    void x3(double const &value);
+    float x1() const;
+    void x1(float value);
 
-    const double *y1() const;
-    void y1(double const &value);
+    float x2() const;
+    void x2(float value);
 
-    const double *y2() const;
-    void y2(double const &value);
+    float x3() const;
+    void x3(float value);
 
-    const double *y3() const;
-    void y3(double const &value);
+    float y1() const;
+    void y1(float value);
 
-    const double *z1() const;
-    void z1(double const &value);
+    float y2() const;
+    void y2(float value);
 
-    const double *z2() const;
-    void z2(double const &value);
+    float y3() const;
+    void y3(float value);
 
-    const double *z3() const;
-    void z3(double const &value);
+    float z1() const;
+    void z1(float value);
 
-	const double *xt() const;
-	void xt(double const &value);
+    float z2() const;
+    void z2(float value);
 
-	const double *yt() const;
-	void yt(double const &value);
+    float z3() const;
+    void z3(float value);
 
-	const double *zt() const;
-	void zt(double const &value);
+	float xt() const;
+	void xt(float value);
 
-    const double *determinant() const;
+	float yt() const;
+	void yt(float value);
+
+	float zt() const;
+	void zt(float value);
+
+	float w1() const;
+	void w1(float value);
+
+	float w2() const;
+	void w2(float value);
+
+	float w3() const;
+	void w3(float value);
+
+	float wt() const;
+	void wt(float value);
+
+    float determinant() const;
 
     void transpose();
 
     void identity();
 
-    void multiplyByScalar(double const &scalar);
+    void multiplyByScalar(float scalar);
 
     void multiplyByMatrix(Matrix3D const &matrix);
 
-    void rotateAboutX(float const &degrees);
+    void rotateAboutX(float degrees);
 
-    void rotateAboutY(float const &degrees);
+    void rotateAboutY(float degrees);
 
-    void rotateAboutZ(float const &degrees);
+    void rotateAboutZ(float degrees);
 
-	void rotateAbout(Vector3D const &vector, float const &degrees);
+	void rotateAbout(Vector3D const &vector, float degrees);
 
-	void scaleAlong(Vector3D const &vector, float const &factor);
-	void scaleAlong(const double &x, const double &y, const double &z, float const &factor);
+	void scaleAlong(Vector3D const &vector, float factor);
+	void scaleAlong(float x, float y, float z, float factor);
 
-	void scale(const double &scaleX, const double &scaleY, const double &scaleZ);
+	void scale(float scaleX, float scaleY, float scaleZ);
 
     void inverse();
 
     Matrix3D clone() const;
 
-    bool isClose(Matrix3D const &matrix, unsigned int const &precision) const;
+    bool isClose(Matrix3D const &matrix, unsigned int precision) const;
 
     bool isEqual(Matrix3D const &matrix) const;
 
@@ -86,34 +104,38 @@ public:
 
 	void orthogonalize();
 
-	void translate(double const &xt, double const &yt, double const &zt);
+	void translate(float xt, float yt, float zt);
 
 	void transform(Vector3D &vector) const;
 
 private:
-    double _x1;
-    double _x2;
-    double _x3;
-    double _y1;
-    double _y2;
-    double _y3;
-    double _z1;
-    double _z2;
-    double _z3;
-	double _xt;
-	double _yt;
-	double _zt;
-    mutable double _determinant;
+    float _x1;
+    float _x2;
+    float _x3;
+    float _y1;
+    float _y2;
+    float _y3;
+    float _z1;
+    float _z2;
+    float _z3;
+	float _xt;
+	float _yt;
+	float _zt;
+	float _w1;
+	float _w2;
+	float _w3;
+	float _wt = 1;
+    mutable float _determinant;
     mutable bool _detNeedsUpdate = true;
 
     void _checkIfDeterminantNeedUpdateAfterRotation() const;
 
 	void _checkUnitVector(Vector3D const &vector) const;
-	void _checkUnitVector(const double &x, const double &y, const double &z) const;
+	void _checkUnitVector(float x, float y, float z) const;
 
     void _checkNonZeroDeterminant() const;
 
-    bool _areClose(double const &value1, double const &value2, int const &factor) const;
+    bool _areClose(float value1, float value2, int factor) const;
 
 	void _performGrandSchmidtOrthogonalizingAlgorithm();
 

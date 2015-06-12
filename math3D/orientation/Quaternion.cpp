@@ -6,32 +6,32 @@
 #include <math.h>
 #include "Quaternion.h"
 
-Quaternion::Quaternion(float const &theta, Vector3D const &v) {
+Quaternion::Quaternion(float theta, Vector3D const &v) {
 	float halfTheta = theta / 2;
-	_w = cos(halfTheta);
-	double sinTheta = sin(halfTheta);
-	_x = sinTheta * *v.x();
-	_y = sinTheta * *v.y();
-	_z = sinTheta * *v.z();
+	_w = cosf(halfTheta);
+	float sinTheta = sinf(halfTheta);
+	_x = sinTheta * v.x();
+	_y = sinTheta * v.y();
+	_z = sinTheta * v.z();
 }
 
-Quaternion::Quaternion(double const &w, double const &x, double const &y, double const &z): _w(w), _x(x), _y(y), _z(z) {}
+Quaternion::Quaternion(float w, float x, float y, float z): _w(w), _x(x), _y(y), _z(z) {}
 
 Quaternion::Quaternion(): Quaternion(1, 0, 0, 0) {}
 
-void Quaternion::w(double const &value) {
+void Quaternion::w(float value) {
 	_w = value;
 }
 
-void Quaternion::x(double const &value) {
+void Quaternion::x(float value) {
 	_x = value;
 }
 
-void Quaternion::y(double const &value) {
+void Quaternion::y(float value) {
 	_y = value;
 }
 
-void Quaternion::z(double const &value) {
+void Quaternion::z(float value) {
 	_z = value;
 }
 
@@ -42,15 +42,15 @@ void Quaternion::invert() {
 }
 
 Quaternion Quaternion::operator*(const Quaternion &q) const {
-	double w = _w * q._w - _x * q._x - _y * q._y - _z * q._z;
-	double x = _w * q._x + _x * q._w + _y * q._z - _z * q._y;
-	double y = _w * q._y + _y * q._w + _z * q._x - _x * q._z;
-	double z = _w * q._z + _z * q._w + _x * q._y - _y * q._x;
+	float w = _w * q._w - _x * q._x - _y * q._y - _z * q._z;
+	float x = _w * q._x + _x * q._w + _y * q._z - _z * q._y;
+	float y = _w * q._y + _y * q._w + _z * q._x - _x * q._z;
+	float z = _w * q._z + _z * q._w + _x * q._y - _y * q._x;
 
 	return Quaternion(w, x, y, z);
 }
 
-Quaternion Quaternion::operator*(const double &scalar) const {
+Quaternion Quaternion::operator*(float scalar) const {
 	return Quaternion(_w * scalar, _x * scalar, _y * scalar, _z * scalar);
 }
 
@@ -60,18 +60,18 @@ Quaternion Quaternion::getDifference(const Quaternion &q1, const Quaternion &q2)
 	return q2 * inverse;
 }
 
-double Quaternion::dotProduct(const Quaternion &q1, const Quaternion &q2) {
+float Quaternion::dotProduct(const Quaternion &q1, const Quaternion &q2) {
 	return q1._w * q2._w + q1._x * q2._x + q1._y * q2._y + q1._z * q2._z;
 }
 
-Quaternion Quaternion::exp(const double &exponent) const {
+Quaternion Quaternion::exp(float exponent) const {
 	Quaternion expQuaternion = *this;
 	if (fabs(_w) < 0.9999f) {
-		double alpha = acos(_w);
-		double newAlpha = alpha * exponent;
-		expQuaternion._w = cos(newAlpha);
+		float alpha = acosf(_w);
+		float newAlpha = alpha * exponent;
+		expQuaternion._w = cosf(newAlpha);
 
-		double mult = sin(newAlpha) / sin(alpha);
+		float mult = sinf(newAlpha) / sinf(alpha);
 		expQuaternion._x *= mult;
 		expQuaternion._y *= mult;
 		expQuaternion._z *= mult;
@@ -79,14 +79,14 @@ Quaternion Quaternion::exp(const double &exponent) const {
 	return expQuaternion;
 }
 
-Quaternion Quaternion::slerp(const Quaternion &to, const float fraction) const {
-	double w = to._w;
-	double x = to._x;
-	double y = to._y;
-	double z = to._z;
+Quaternion Quaternion::slerp(const Quaternion &to, float fraction) const {
+	float w = to._w;
+	float x = to._x;
+	float y = to._y;
+	float z = to._z;
 
 	// Compute the "cosine of the angle" between the quaternions, using the dot product
-	double cosOmega = _w * w + _x * x + _y * y + _z * z;
+	float cosOmega = _w * w + _x * x + _y * y + _z * z;
 
 	// if negative dot, negate one of the input quaternions, to take the shorter 4D "arc"
 	if (cosOmega < 0.0f) {
@@ -97,24 +97,24 @@ Quaternion Quaternion::slerp(const Quaternion &to, const float fraction) const {
 	}
 
 	// Check if they are very close together, to protect against divide-by-zero
-	double k0, k1;
+	float k0, k1;
 	if (cosOmega > 0.9999f) {
 		// Very close - just use linear interpolation
 		k0 = 1.0f - fraction;
 		k1 = fraction;
 	} else {
 		// Compute the sin of the angle using the trig identity sin * 2(omega) + cos * 2(omega) = 1
-		double sinOmega = sqrt(1.0f - cosOmega * cosOmega);
+		float sinOmega = sqrtf(1.0f - cosOmega * cosOmega);
 
 		// Compute the angle from its sin and cosine
-		double omega = atan2(sinOmega, cosOmega);
+		float omega = atan2f(sinOmega, cosOmega);
 
 		// Compute inverse of denominator, so we only have to divide once
-		double oneOverSinOmega = 1.0f / sinOmega;
+		float oneOverSinOmega = 1.0f / sinOmega;
 
 		// Compute interpolation parameters
-		k0 = sin((1.0f - fraction) * omega) * oneOverSinOmega;
-		k1 = sin(fraction * omega) * oneOverSinOmega;
+		k0 = sinf((1.0f - fraction) * omega) * oneOverSinOmega;
+		k1 = sinf(fraction * omega) * oneOverSinOmega;
 	}
 
 	// interpolate
@@ -127,43 +127,43 @@ Quaternion Quaternion::slerp(const Quaternion &to, const float fraction) const {
 }
 
 Matrix3D Quaternion::toMatrix() const {
-	double qx2 = _x * _x;
-	double qy2 = _y * _y;
-	double qz2 = _z * _z;
-	double x1 = 1 - 2 * qy2 - 2 * qz2;
-	double y1 = 2 * _x * _y + 2 * _w * _z;
-	double z1 = 2 * _x * _z - 2 * _w * _y;
-	double x2 = 2 * _x * _y - 2 * _w * _z;
-	double y2 = 1 - 2 * qx2 - 2 * qz2;
-	double z2 = 2 * _y * _z + 2 * _w * _x;
-	double x3 = 2 * _x * _z + 2 * _w * _y;
-	double y3 = 2 * _y * _z - 2 * _w * _x;
-	double z3 = 1 - 2 * qx2 - 2 * qy2;
+	float qx2 = _x * _x;
+	float qy2 = _y * _y;
+	float qz2 = _z * _z;
+	float x1 = 1 - 2 * qy2 - 2 * qz2;
+	float y1 = 2 * _x * _y + 2 * _w * _z;
+	float z1 = 2 * _x * _z - 2 * _w * _y;
+	float x2 = 2 * _x * _y - 2 * _w * _z;
+	float y2 = 1 - 2 * qx2 - 2 * qz2;
+	float z2 = 2 * _y * _z + 2 * _w * _x;
+	float x3 = 2 * _x * _z + 2 * _w * _y;
+	float y3 = 2 * _y * _z - 2 * _w * _x;
+	float z3 = 1 - 2 * qx2 - 2 * qy2;
 	return Matrix3D(x1, y1, z1, x2, y2, z2, x3, y3, z3);
 }
 
 Quaternion Quaternion::fromMatrix(const Matrix3D &matrix) {
-	double x1 = *matrix.x1();
-	double y1 = *matrix.y1();
-	double z1 = *matrix.z1();
-	double x2 = *matrix.x2();
-	double y2 = *matrix.y2();
-	double z2 = *matrix.z2();
-	double x3 = *matrix.x3();
-	double y3 = *matrix.y3();
-	double z3 = *matrix.z3();
+	float x1 = matrix.x1();
+	float y1 = matrix.y1();
+	float z1 = matrix.z1();
+	float x2 = matrix.x2();
+	float y2 = matrix.y2();
+	float z2 = matrix.z2();
+	float x3 = matrix.x3();
+	float y3 = matrix.y3();
+	float z3 = matrix.z3();
 
 	// output quaternion
-	double qw, qx, qy, qz;
+	float qw, qx, qy, qz;
 
 	// determine which of w, x, y or z has the largest absolute value
-	double fourWSquareMinus1 = x1 + y2 + z3;
-	double fourXSquareMinus1 = x1 - y2 - z3;
-	double fourYSquareMinus1 = y2 - x1 - z3;
-	double fourZSquareMinus1 = z3 - x1 - y2;
+	float fourWSquareMinus1 = x1 + y2 + z3;
+	float fourXSquareMinus1 = x1 - y2 - z3;
+	float fourYSquareMinus1 = y2 - x1 - z3;
+	float fourZSquareMinus1 = z3 - x1 - y2;
 
 	int biggestIndex = 0;
-	double fourBiggestSquareMinus1 = fourWSquareMinus1;
+	float fourBiggestSquareMinus1 = fourWSquareMinus1;
 	if (fourXSquareMinus1 > fourBiggestSquareMinus1) {
 		fourBiggestSquareMinus1 = fourXSquareMinus1;
 		biggestIndex = 1;
@@ -178,8 +178,8 @@ Quaternion Quaternion::fromMatrix(const Matrix3D &matrix) {
 	}
 
 	// perform square root and division
-	double biggestVal = sqrt(fourBiggestSquareMinus1 + 1) * 0.5;
-	double mult = 0.25 / biggestVal;
+	float biggestVal = sqrtf(fourBiggestSquareMinus1 + 1) * 0.5f;
+	float mult = 0.25f / biggestVal;
 
 	// apply table to compute quaternion values
 	switch (biggestIndex) {
@@ -222,15 +222,15 @@ EulerAngles Quaternion::uprightToEulerAngles() const {
 		// looking straight up tor down
 		p = 1.570796f * sp; // pi / 2
 		// compute heading, slam bank to zero
-		h = atan2(-_x * _z + _w * _y, 0.5f - _y * _y - _z * _z);
+		h = atan2f(-_x * _z + _w * _y, 0.5f - _y * _y - _z * _z);
 		b = 0;
 	} else {
 		// compute angles
-		p = asin(sp);
-		h = atan2(_x * _z + _w * _y, 0.5f - _x * _x - _y * _y);
-		b = atan2(_x * _y + _w * _z, 0.5f - _x * _x - _z * _z);
+		p = asinf(sp);
+		h = atan2f(_x * _z + _w * _y, 0.5f - _x * _x - _y * _y);
+		b = atan2f(_x * _y + _w * _z, 0.5f - _x * _x - _z * _z);
 	}
-	double toGrads = 180 / M_PI;
+	float toGrads = (float) (180 / M_PI);
 	return EulerAngles(h * toGrads, p * toGrads, b * toGrads);
 }
 
@@ -245,14 +245,14 @@ EulerAngles Quaternion::objectToEulerAngles() const {
 		// looking straight up tor down
 		p = 1.570796f * sp; // pi / 2
 		// compute heading, slam bank to zero
-		h = atan2(-_x * _z - _w * _y, 0.5f - _y * _y - _z * _z);
+		h = atan2f(-_x * _z - _w * _y, 0.5f - _y * _y - _z * _z);
 		b = 0;
 	} else {
 		// compute angles
-		p = asin(sp);
-		h = atan2(_x * _z - _w * _y, 0.5f - _x * _x - _y * _y);
-		b = atan2(_x * _y - _w * _z, 0.5f - _x * _x - _z * _z);
+		p = asinf(sp);
+		h = atan2f(_x * _z - _w * _y, 0.5f - _x * _x - _y * _y);
+		b = atan2f(_x * _y - _w * _z, 0.5f - _x * _x - _z * _z);
 	}
-	double toGrads = 180 / M_PI;
+	float toGrads = (float) (180 / M_PI);
 	return EulerAngles(h * toGrads, p * toGrads, b * toGrads);
 }

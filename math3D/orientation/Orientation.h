@@ -10,7 +10,9 @@
 
 class Orientation {
 public:
-	double static getShortestDifference(double const &angle1, double const &angle2);
+	float static getShortestDifference(float angle1, float angle2);
+private:
+    float static _wrapPi(float theta);
 };
 
 

@@ -8,32 +8,32 @@ class Matrix3D;
 
 class Vector3D {
 public:
-    Vector3D(double const &x = 0, double const &y = 0, double const &z = 0, double const &w = 1);
+    Vector3D(float x = 0, float y = 0, float z = 0, float w = 1);
 
-    static double distanceBetween(Vector3D const &vector1, Vector3D const &vector2);
+    static float distanceBetween(Vector3D const &vector1, Vector3D const &vector2);
 
-    static double dotProduct(Vector3D const &vector1, Vector3D const &vector2);
+    static float dotProduct(Vector3D const &vector1, Vector3D const &vector2);
 
-    static double angleBetween(Vector3D const &vector1, Vector3D const &vector2);
+    static float angleBetween(Vector3D const &vector1, Vector3D const &vector2);
 
     static Vector3D crossProduct(Vector3D const &vector1, Vector3D const &vector2);
 
-    const double *x() const;
-    void x(double const &value);
+    float x() const;
+    void x(float value);
 
-    const double *y() const;
-    void y(double const &value);
+    float y() const;
+    void y(float value);
 
-    const double *z() const;
-    void z(double const &value);
+    float z() const;
+    void z(float value);
 
-    const double *w() const;
-    void w(double const &value);
+    float w() const;
+    void w(float value);
 
-    const double *length() const;
-    void length(double const &value);
+    float length() const;
+    void length(float value);
 
-    void multiplyByScalar(double const &scalar);
+    void multiplyByScalar(float scalar);
 
     void normalize();
 
@@ -47,7 +47,7 @@ public:
 
     Vector3D clone() const;
 
-    double operator*(Vector3D& v) const;
+    float operator*(Vector3D& v) const;
 
     Vector3D operator+(Vector3D& v) const;
 
@@ -55,25 +55,25 @@ public:
 
     Vector3D operator/(Vector3D& v) const;
 
-    Vector3D operator*(double& scalar) const;
+    Vector3D operator*(float scalar) const;
 
     Vector3D operator*(Matrix3D& m) const;
 
     bool operator==(Vector3D& v) const;
 
 private:
-    double _x;
-    double _y;
-    double _z;
-    double _w;
-    mutable double _length;
+    float _x;
+    float _y;
+    float _z;
+    float _w;
+    mutable float _length;
     mutable bool _lengthNeedsUpdate = true;
 
-    static double _squareRootOfSquareSums(double const &a, double const &b, double const &c);
+    static float _squareRootOfSquareSums(float a, float b, float c);
 
     void _updateLength() const;
 
-    void _setLengthValue(double const &value) const;
+    void _setLengthValue(float value) const;
 
     bool _isZero();
 };

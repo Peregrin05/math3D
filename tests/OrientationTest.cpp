@@ -1,19 +1,19 @@
-#include <gtest/gtest.h>
-#include <math.h>
+#include <gmock/gmock.h>
 #include "Orientation.h"
 
-const static double radialMult = M_PI / 180;
+const static float radialMult = (float const) (M_PI / 180);
 
 class OrientationTest : public testing::Test {
 public:
 	void SetUp() override {
 	}
 
-	void assertShortestDifference(double const angle1, double const angle2, double const difference) {
-		const double radian1 = -170 * radialMult;
-		const double radian2 = 170 * radialMult;
-		const double radianDifference = -20 * radialMult;
-		ASSERT_FLOAT_EQ(radianDifference, Orientation::getShortestDifference(radian1, radian2));
+	void assertShortestDifference(float angle1, float angle2, float difference) {
+        const float radian1 = angle1 * radialMult;
+		const float radian2 = angle2 * radialMult;
+		const float radianDifference = difference * radialMult;
+        const float result = Orientation::getShortestDifference(radian1, radian2);
+        ASSERT_THAT(radianDifference, testing::FloatNear(result, 0.0001));
 	}
 };
 

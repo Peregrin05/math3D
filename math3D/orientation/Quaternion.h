@@ -2,7 +2,7 @@
 #define __Qauternion_H_
 
 
-#include "Vector3D.h"
+#include "../core/Vector3D.h"
 #include "EulerAngles.h"
 
 class EulerAngles;
@@ -13,43 +13,43 @@ public:
 
 	Quaternion static fromMatrix(const Matrix3D& matrix);
 
-	double static dotProduct(const Quaternion& q1, const Quaternion& q2);
+	float static dotProduct(const Quaternion& q1, const Quaternion& q2);
 
-	Quaternion(float const &theta, Vector3D const &v = Vector3D(0,0,0));
+	Quaternion(float theta, Vector3D const &v = Vector3D(0,0,0));
 
-	Quaternion(double const &w, double const &x, double const &y, double const &z);
+	Quaternion(float w, float x, float y, float z);
 
 	Quaternion();
 
-	double const *w() const {
-		return &_w;
+	float w() const {
+		return _w;
 	}
-	void w(double const &value);
+	void w(float value);
 
-	double const *x() const {
-		return &_x;
+	float x() const {
+		return _x;
 	}
-	void x(double const &value);
+	void x(float value);
 
-	double const *y() const {
-		return &_y;
+	float y() const {
+		return _y;
 	}
-	void y(double const &value);
+	void y(float value);
 
-	double const *z() const {
-		return &_z;
+	float z() const {
+		return _z;
 	}
-	void z(double const &value);
+	void z(float value);
 
 	void invert();
 
 	Quaternion operator*(const Quaternion& q) const;
 
-	Quaternion operator*(const double& scalar) const;
+	Quaternion operator*(float scalar) const;
 
-	Quaternion exp(double const &exponent) const;
+	Quaternion exp(float exponent) const;
 
-	Quaternion slerp(const Quaternion&to, const float fraction) const;
+	Quaternion slerp(const Quaternion&to, float fraction) const;
 
 	Matrix3D toMatrix() const;
 
@@ -58,10 +58,10 @@ public:
 	EulerAngles objectToEulerAngles() const;
 
 private:
-	double _w;
-	double _x;
-	double _y;
-	double _z;
+	float _w;
+	float _x;
+	float _y;
+	float _z;
 };
 
 

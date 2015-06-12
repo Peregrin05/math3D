@@ -2,7 +2,7 @@
 #define __EulerAngles_H_
 
 
-#include "Matrix3D.h"
+#include "../core/Matrix3D.h"
 #include "Quaternion.h"
 
 class Quaternion;
@@ -13,39 +13,44 @@ public:
 
 	static EulerAngles fromObjectMatrix(const Matrix3D &matrix);
 
-	EulerAngles(float const &heading = 0, float const &pitch = 0, float const &bank = 0);
+	EulerAngles(float heading = 0, float pitch = 0, float bank = 0);
 
-	float const * heading() {
-		return &_heading;
+	float heading() const {
+		return _heading;
 	}
-	void heading(float const &value);
+	void heading(float value);
 
-	float const * pitch() {
-		return &_pitch;
+	float pitch() const {
+		return _pitch;
 	}
-	void pitch(float const &value);
+	void pitch(float value);
 
-	float const * bank() {
-		return &_bank;
+	float bank() const {
+		return _bank;
 	}
-	void bank(float const &value);
+	void bank(float value);
 
 	bool isCanonical() const;
 
 	void canonize();
 
-	Matrix3D toUprightMatrix();
+	Matrix3D toUprightMatrix() const;
 
-	Matrix3D toObjectMatrix();
+	Matrix3D toObjectMatrix() const;
 
 	Quaternion toUprightQuaternion() const;
 
 	Quaternion toObjectQuaternion() const;
 
 private:
-	float _heading;
+    const static int HALF_CIRCLE = 180;
+    const static int FULL_CIRCLE = 360;
+
+    float _heading;
 	float _pitch;
 	float _bank;
+
+    float _wrap180(float theta);
 };
 
 
