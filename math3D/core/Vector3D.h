@@ -66,8 +66,8 @@ public:
 
 private:
     float _row[4];
-    mutable float _length;
-    mutable bool _lengthNeedsUpdate = true;
+//    mutable float _length;
+//    mutable bool _lengthNeedsUpdate = true;
 
     static float _squareRootOfSquareSums(float a, float b, float c);
 

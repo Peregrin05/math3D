@@ -40,17 +40,17 @@ float Vector3D::_squareRootOfSquareSums(float a, float b, float c) {
 
 void Vector3D::x(float value) {
     _row[0] = value;
-    _lengthNeedsUpdate = true;
+//    _lengthNeedsUpdate = true;
 }
 
 void Vector3D::y(float value) {
     _row[1] = value;
-    _lengthNeedsUpdate = true;
+//    _lengthNeedsUpdate = true;
 }
 
 void Vector3D::z(float value) {
     _row[2] = value;
-    _lengthNeedsUpdate = true;
+//    _lengthNeedsUpdate = true;
 }
 
 void Vector3D::w(float value) {
@@ -61,7 +61,8 @@ float Vector3D::length() const {
 //    if (_lengthNeedsUpdate) {
         _updateLength();
 //    }
-    return _length;
+//    return _length;
+    return _squareRootOfSquareSums(_row[0], _row[1], _row[2]);
 }
 
 void Vector3D::length(float value) {
@@ -74,14 +75,14 @@ void Vector3D::add(Vector3D const &vector) {
     _row[0] += vector[0];
     _row[1] += vector[1];
     _row[2] += vector[2];
-    _lengthNeedsUpdate = true;
+//    _lengthNeedsUpdate = true;
 }
 
 void Vector3D::subtract(Vector3D const &vector) {
     _row[0] -= vector[0];
     _row[1] -= vector[1];
     _row[2] -= vector[2];
-    _lengthNeedsUpdate = true;
+//    _lengthNeedsUpdate = true;
 }
 
 void Vector3D::multiplyByMatrix(Matrix3D const &matrix) {
@@ -90,9 +91,9 @@ void Vector3D::multiplyByMatrix(Matrix3D const &matrix) {
 
 Vector3D Vector3D::clone() const {
     Vector3D cloneVector(_row[0], _row[1], _row[2], _row[3]);
-    if (!_lengthNeedsUpdate) {
-        cloneVector._setLengthValue(_length);
-    }
+//    if (!_lengthNeedsUpdate) {
+//        cloneVector._setLengthValue(_length);
+//    }
     return cloneVector;
 }
 
@@ -106,15 +107,15 @@ void Vector3D::_updateLength() const {
 }
 
 void Vector3D::_setLengthValue(float value) const {
-    _length = value;
-    _lengthNeedsUpdate = false;
+//    _length = value;
+//    _lengthNeedsUpdate = false;
 }
 
 void Vector3D::multiplyByScalar(float scalar) {
     _row[0] *= scalar;
     _row[1] *= scalar;
     _row[2] *= scalar;
-    _lengthNeedsUpdate = true;
+//    _lengthNeedsUpdate = true;
 }
 
 void Vector3D::normalize() {

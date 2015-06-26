@@ -53,47 +53,47 @@ Matrix3D Matrix3D::orthographicProjection(float fovy, float aspectRatio, float n
 
 void Matrix3D::x1(float value) {
     _rows[0][0] = value;
-    _detNeedsUpdate = true;
+//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::x2(float value) {
     _rows[1][0] = value;
-    _detNeedsUpdate = true;
+//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::x3(float value) {
     _rows[2][0] = value;
-    _detNeedsUpdate = true;
+//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::y1(float value) {
     _rows[0][1] = value;
-    _detNeedsUpdate = true;
+//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::y2(float value) {
     _rows[1][1] = value;
-    _detNeedsUpdate = true;
+//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::y3(float value) {
     _rows[2][1] = value;
-    _detNeedsUpdate = true;
+//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::z1(float value) {
     _rows[0][2] = value;
-    _detNeedsUpdate = true;
+//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::z2(float value) {
     _rows[1][2] = value;
-    _detNeedsUpdate = true;
+//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::z3(float value) {
     _rows[2][2] = value;
-    _detNeedsUpdate = true;
+//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::xt(float value) {
@@ -125,13 +125,13 @@ void Matrix3D::wt(float value) {
 }
 
 float  Matrix3D::determinant() const {
-    if (_detNeedsUpdate) {
-        _determinant =
+//    if (_detNeedsUpdate) {
+        float _determinant =
         _rows[0][0] * _rows[1][1] * _rows[2][2] + _rows[0][1] * _rows[1][2] * _rows[2][0] + _rows[0][2] * _rows[1][0] *
                 _rows[2][1] - _rows[0][0] * _rows[1][2] * _rows[2][1] - _rows[0][1] * _rows[1][0] *
                 _rows[2][2] - _rows[0][2] * _rows[1][1] * _rows[2][0];
-        _detNeedsUpdate = false;
-    }
+//        _detNeedsUpdate = false;
+//    }
     return _determinant;
 }
 
@@ -157,8 +157,8 @@ void Matrix3D::identity() {
     _rows[2][0] = 0;
     _rows[2][1] = 0;
     _rows[2][2] = 1;
-    _determinant = 1;
-    _detNeedsUpdate = false;
+//    _determinant = 1;
+//    _detNeedsUpdate = false;
 }
 
 void Matrix3D::multiplyByScalar(float scalar) {
@@ -171,7 +171,7 @@ void Matrix3D::multiplyByScalar(float scalar) {
     _rows[2][0] *= scalar;
     _rows[2][1] *= scalar;
     _rows[2][2] *= scalar;
-    _detNeedsUpdate = true;
+//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::multiplyByMatrix(Matrix3D const & m) {
@@ -207,7 +207,7 @@ void Matrix3D::multiplyByMatrix(Matrix3D const & m) {
 	_rows[1][3] = newW2;
 	_rows[2][3] = newW3;
 	_rows[3][3] = newWT;
-    _detNeedsUpdate = true;
+//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::rotateAboutX(float degrees) {
@@ -286,7 +286,7 @@ void Matrix3D::scaleAlong(float x, float y, float z, float factor) {
 	_rows[2][0] *= z1x3;
 	_rows[2][1] *= z2y3;
 	_rows[2][2] *= 1 + facOp * z * z;
-	_detNeedsUpdate = true;
+//	_detNeedsUpdate = true;
 }
 
 void Matrix3D::scale(float  scaleX, float  scaleY, float  scaleZ) {
@@ -299,11 +299,12 @@ void Matrix3D::scale(float  scaleX, float  scaleY, float  scaleZ) {
 	_rows[2][0] *= scaleZ;
 	_rows[2][1] *= scaleZ;
 	_rows[2][2] *= scaleZ;
-	_detNeedsUpdate = true;
+//	_detNeedsUpdate = true;
 }
 
 void Matrix3D::inverse() {
     _checkNonZeroDeterminant();
+    float det = determinant();
     float newX1 = _rows[1][1] * _rows[2][2] - _rows[1][2] * _rows[2][1]; // cofactor 0, 0 +
     float newY1 = _rows[1][2] * _rows[2][0] - _rows[1][0] * _rows[2][2]; // cofactor 0, 1 -
     float newZ1 = _rows[1][0] * _rows[2][1] - _rows[1][1] * _rows[2][0]; // cofactor 0, 2 +
@@ -323,7 +324,8 @@ void Matrix3D::inverse() {
     _rows[2][1] = newY3;
     _rows[2][2] = newZ3;
     transpose();
-    multiplyByScalar(1 / _determinant);
+//    multiplyByScalar(1 / _determinant);
+    multiplyByScalar(1 / det);
 }
 
 bool Matrix3D::isEqual(Matrix3D const &matrix) const {
@@ -387,7 +389,7 @@ void Matrix3D::orthogonalize() {
 		_performOrthogonalizingAlgorithm();
 	}
 	_performGrandSchmidtOrthogonalizingAlgorithm();
-	_detNeedsUpdate = true;
+//	_detNeedsUpdate = true;
 }
 
 void Matrix3D::_performGrandSchmidtOrthogonalizingAlgorithm() {
@@ -454,9 +456,9 @@ bool Matrix3D::_areClose(float value1, float value2, int factor) const {
 
 
 void Matrix3D::_checkIfDeterminantNeedUpdateAfterRotation() const {
-	if (!_detNeedsUpdate && _determinant != 1) {
-		_detNeedsUpdate = true;
-	}
+//	if (!_detNeedsUpdate && _determinant != 1) {
+//		_detNeedsUpdate = true;
+//	}
 }
 
 void Matrix3D::_checkUnitVector(Vector3D const &vector) const {

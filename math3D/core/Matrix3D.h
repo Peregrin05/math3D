@@ -113,8 +113,8 @@ public:
 
 private:
     Vector3D _rows[4] = {};
-    mutable float _determinant;
-    mutable bool _detNeedsUpdate = true;
+//    mutable float _determinant;
+//    mutable bool _detNeedsUpdate = true;
 
     void _checkIfDeterminantNeedUpdateAfterRotation() const;
 

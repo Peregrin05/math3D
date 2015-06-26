@@ -324,7 +324,7 @@ TEST_F(OrthogonalMatrixTest, DeterminantIsOne) {
 TEST_F(OrthogonalMatrixTest, Rotating_doesNotChangeDeterminant) {
 	float oldDeterminant = orthogonalMatrix.determinant();
 	orthogonalMatrix.rotateAbout(_createArbitraryVector(), 30);
-	ASSERT_THAT(orthogonalMatrix.determinant(), Eq(oldDeterminant));
+	ASSERT_THAT(orthogonalMatrix.determinant(), FloatEq(oldDeterminant));
 }
 
 TEST_F(OrthogonalMatrixTest, RotatingNotOrthogonalMatrix_changesDeterminant) {
