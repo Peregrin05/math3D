@@ -1,7 +1,7 @@
 #include <math.h>
 #include <gmock/gmock-matchers.h>
 #include "gtest/gtest.h"
-#include "Vector3D.h"
+#include "Matrix3D.h"
 
 using namespace testing;
 

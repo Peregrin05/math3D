@@ -2,7 +2,7 @@
 #define __Vector3D_H_
 
 
-#include "Matrix3D.h"
+//#include "Matrix3D.h"
 
 class Matrix3D;
 
@@ -18,16 +18,16 @@ public:
 
     static Vector3D crossProduct(Vector3D const &vector1, Vector3D const &vector2);
 
-    float x() const;
+    float x() const { return _row[0]; }
     void x(float value);
 
-    float y() const;
+    float y() const { return _row[1]; }
     void y(float value);
 
-    float z() const;
+    float z() const { return _row[2]; }
     void z(float value);
 
-    float w() const;
+    float w() const { return _row[3]; }
     void w(float value);
 
     float length() const;
@@ -59,13 +59,13 @@ public:
 
     Vector3D operator*(Matrix3D& m) const;
 
+     const float& operator[](int index) const;
+    float& operator[](int index);
+
     bool operator==(Vector3D& v) const;
 
 private:
-    float _x;
-    float _y;
-    float _z;
-    float _w;
+    float _row[4];
     mutable float _length;
     mutable bool _lengthNeedsUpdate = true;
 

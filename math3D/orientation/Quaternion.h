@@ -2,7 +2,7 @@
 #define __Qauternion_H_
 
 
-#include "../core/Vector3D.h"
+#include "../core/Matrix3D.h"
 #include "EulerAngles.h"
 
 class EulerAngles;

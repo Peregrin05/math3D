@@ -21,52 +21,52 @@ public:
 
 	static Matrix3D orthographicProjection(float fovy, float aspectRatio, float near, float far);
 
-    float x1() const;
+    float x1() const { return _rows[0][0]; };
     void x1(float value);
 
-    float x2() const;
+    float x2() const { return _rows[1][0]; }
     void x2(float value);
 
-    float x3() const;
+    float x3() const { return _rows[2][0]; }
     void x3(float value);
 
-    float y1() const;
+    float y1() const { return _rows[0][1]; }
     void y1(float value);
 
-    float y2() const;
+    float y2() const { return _rows[1][1]; }
     void y2(float value);
 
-    float y3() const;
+    float y3() const { return _rows[2][1]; }
     void y3(float value);
 
-    float z1() const;
+    float z1() const { return _rows[0][2]; }
     void z1(float value);
 
-    float z2() const;
+    float z2() const { return _rows[1][2]; }
     void z2(float value);
 
-    float z3() const;
+    float z3() const { return _rows[2][2]; }
     void z3(float value);
 
-	float xt() const;
+	float xt() const { return _rows[3][0]; }
 	void xt(float value);
 
-	float yt() const;
+	float yt() const { return _rows[3][1]; }
 	void yt(float value);
 
-	float zt() const;
+	float zt() const { return _rows[3][2]; }
 	void zt(float value);
 
-	float w1() const;
+	float w1() const { return _rows[0][3]; }
 	void w1(float value);
 
-	float w2() const;
+	float w2() const { return _rows[1][3]; }
 	void w2(float value);
 
-	float w3() const;
+	float w3() const { return _rows[2][3]; }
 	void w3(float value);
 
-	float wt() const;
+	float wt() const { return _rows[3][3]; }
 	void wt(float value);
 
     float determinant() const;
@@ -77,7 +77,7 @@ public:
 
     void multiplyByScalar(float scalar);
 
-    void multiplyByMatrix(Matrix3D const &matrix);
+    void multiplyByMatrix(Matrix3D const & m);
 
     void rotateAboutX(float degrees);
 
@@ -108,23 +108,11 @@ public:
 
 	void transform(Vector3D &vector) const;
 
+    Vector3D& operator[](int index);
+    const Vector3D& operator[](int index) const;
+
 private:
-    float _x1;
-    float _x2;
-    float _x3;
-    float _y1;
-    float _y2;
-    float _y3;
-    float _z1;
-    float _z2;
-    float _z3;
-	float _xt;
-	float _yt;
-	float _zt;
-	float _w1;
-	float _w2;
-	float _w3;
-	float _wt = 1;
+    Vector3D _rows[4] = {};
     mutable float _determinant;
     mutable bool _detNeedsUpdate = true;
 

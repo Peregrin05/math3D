@@ -1,8 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include "gtest/gtest.h"
-#include "Vector3D.h"
-//#include "Matrix3D.h"
+#include "Matrix3D.h"
 
 
 void _vector() ;
@@ -49,7 +48,7 @@ void _matrix() {
 }
 
 void printVector(const Vector3D &vector) {
-    std::cout << printf("\nvector %f, %f, %f - %f            ", vector.x(), vector.y(), vector.z(), vector.length());
+    std::cout << printf("\nvector %f, %f, %f - %f            ", vector[0], vector[1], vector[2], vector.length());
 }
 
 void _vector() {
