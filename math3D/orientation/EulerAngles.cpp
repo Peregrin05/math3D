@@ -153,9 +153,9 @@ EulerAngles EulerAngles::fromUprightMatrix(const Matrix3D &matrix) {
 		b = 0.0f;
 		h = atan2f(-matrix.z1(), matrix.x1());
 	} else {
-		// Compute heading from z1 and z3
+		// Compute heading from x3 and z3
 		h = atan2f(matrix.x3(), matrix.z3());
-		// Compute bank from x1 and y2
+		// Compute bank from y1 and y2
 		b = atan2f(matrix.y1(), matrix.y2());
 	}
 	float toGradMult = (float) (180 / M_PI);
@@ -165,10 +165,12 @@ EulerAngles EulerAngles::fromUprightMatrix(const Matrix3D &matrix) {
 EulerAngles EulerAngles::fromObjectMatrix(const Matrix3D &matrix) {
 	// We will compute the Euler angle values in radians and store them here:
 	float h, p, b;
+    Matrix3D m(matrix);
+    m.transpose();
 
 	// Extract pitch from y3, being careful for domain errors with asin().
 	// We could have values slightly out of range due to floating point arithmetic
-	float sp = -matrix.z2();
+	float sp = -m.y3();
 
 	if (sp <= -1.0f) {
 		p = (float) (-M_PI / 2);
@@ -183,12 +185,12 @@ EulerAngles EulerAngles::fromObjectMatrix(const Matrix3D &matrix) {
 		// We are looking straight up or down.
 		// Slam bank to zero and just set heading
 		b = 0.0f;
-		h = atan2f(-matrix.z1(), matrix.x1());
+		h = atan2f(-m.z1(), m.x1());
 	} else {
-		// Compute heading from z1 and z3
-		h = atan2f(matrix.x3(), matrix.z3());
-		// Compute bank from x1 and y2
-		b = atan2f(matrix.y1(), matrix.y2());
+		// Compute heading from x3 and z3
+		h = atan2f(m.x3(), m.z3());
+		// Compute bank from y1 and y2
+		b = atan2f(m.y1(), m.y2());
 	}
 	float toGradMult = (float) (180 / M_PI);
 	return EulerAngles(h * toGradMult, p * toGradMult, b * toGradMult);

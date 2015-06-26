@@ -284,7 +284,25 @@ TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrixBlaBla) {
     ASSERT_THAT(eulerAngles.bank(), FloatNear(0, DELTA));
 }
 
-// TODO: figure out why fromObjectMatrix() amd fromUprightMatrix() are flipping sign
+TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrixBlaBlaBla) {
+    set(-135, -45, 0);
+    Matrix3D m(-0.707f, 0, 0.707, 0.5, 0.707, 0.5, -0.5f, 0.707, -0.5f);
+    m.transpose();
+    eulerAngles = EulerAngles::fromObjectMatrix(m);
+    ASSERT_THAT(eulerAngles.heading(), FloatNear(-135, DELTA));
+    ASSERT_THAT(eulerAngles.pitch(), FloatNear(-45, DELTA));
+    ASSERT_THAT(eulerAngles.bank(), FloatNear(0, DELTA));
+
+    set(123, 33.5f, -32.7f);
+    m = Matrix3D(-0.713f, -0.45f, -0.538f, 0.091, 0.702, -0.706f, 0.696, -0.552f, -0.46f);
+    m.transpose();
+    eulerAngles = EulerAngles::fromObjectMatrix(m);
+    ASSERT_THAT(eulerAngles.heading(), FloatNear(123, 0.5));
+    ASSERT_THAT(eulerAngles.pitch(), FloatNear(33.5f, DELTA));
+    ASSERT_THAT(eulerAngles.bank(), FloatNear(-32.7f, 0.3));
+}
+
+// TODO: figure out why fromObjectMatrix() and fromUprightMatrix() are flipping sign
 /*
 TEST_F(EulerAnglesConvertToMatrixTest, FromUprightMatrix) {
     set(180, 45, 180);
