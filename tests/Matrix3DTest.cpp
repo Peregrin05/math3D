@@ -169,6 +169,45 @@ float _dotProd(const array<float const, 3> v1, array<float const, 3> v2) {
     return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
 }
 
+TEST_F(Matrix3DTest, MatrixMultiplication) {
+    matrix = Matrix3D();
+    Matrix3D m;
+    m.multiplyByScalar(2);
+    matrix.multiplyByMatrix(m);
+    ASSERT_EQ(2, matrix.x1());
+    ASSERT_EQ(0, matrix.x2());
+    ASSERT_EQ(0, matrix.x3());
+    ASSERT_EQ(0, matrix.y1());
+    ASSERT_EQ(2, matrix.y2());
+    ASSERT_EQ(0, matrix.y3());
+    ASSERT_EQ(0, matrix.z1());
+    ASSERT_EQ(0, matrix.z2());
+    ASSERT_EQ(2, matrix.z3());
+    ASSERT_EQ(0, matrix.xt());
+    ASSERT_EQ(0, matrix.yt());
+    ASSERT_EQ(0, matrix.zt());
+}
+
+TEST_F(Matrix3DTest, IdentityMatrix) {
+    matrix = Matrix3D();
+    ASSERT_EQ(1, matrix.x1());
+    ASSERT_EQ(0, matrix.y1());
+    ASSERT_EQ(0, matrix.z1());
+    ASSERT_EQ(0, matrix.w1());
+    ASSERT_EQ(0, matrix.x2());
+    ASSERT_EQ(1, matrix.y2());
+    ASSERT_EQ(0, matrix.z2());
+    ASSERT_EQ(0, matrix.w2());
+    ASSERT_EQ(0, matrix.x3());
+    ASSERT_EQ(0, matrix.y3());
+    ASSERT_EQ(1, matrix.z3());
+    ASSERT_EQ(0, matrix.w3());
+    ASSERT_EQ(0, matrix.xt());
+    ASSERT_EQ(0, matrix.yt());
+    ASSERT_EQ(0, matrix.zt());
+    ASSERT_EQ(1, matrix.wt());
+}
+
 TEST_F(Matrix3DTest, ConstructorSavesParams) {
 	matrix = Matrix3D(X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3, XT, YT, ZT);
     ASSERT_EQ(X1, matrix.x1());

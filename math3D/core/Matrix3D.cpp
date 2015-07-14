@@ -10,17 +10,18 @@ Matrix3D::Matrix3D(float x1, float y1, float z1, float x2, float y2,
 		float z2, float x3, float y3, float z3, float xt, float yt,
 		float zt)
 {
-    _rows[0] = Vector3D(x1, y1, z1);
-    _rows[1] = Vector3D(x2, y2, z2);
-    _rows[2] = Vector3D(x3, y3, z3);
-    _rows[3] = Vector3D(xt, yt, zt);
+    _rows[0] = Vector3D(x1, y1, z1, 0);
+    _rows[1] = Vector3D(x2, y2, z2, 0);
+    _rows[2] = Vector3D(x3, y3, z3, 0);
+    _rows[3] = Vector3D(xt, yt, zt, 1);
 }
 
 Matrix3D::Matrix3D()
 {
-    _rows[0] = Vector3D(1, 0, 0);
-    _rows[1] = Vector3D(0, 1, 0);
-    _rows[2] = Vector3D(0, 0, 1);
+    _rows[0] = Vector3D(1, 0, 0, 0);
+    _rows[1] = Vector3D(0, 1, 0, 0);
+    _rows[2] = Vector3D(0, 0, 1, 0);
+    _rows[3] = Vector3D(0, 0, 0, 1);
 }
 
 Matrix3D Matrix3D::perspectiveProjection(float fovy, float aspectRatio, float near, float far) {
@@ -175,38 +176,38 @@ void Matrix3D::multiplyByScalar(float scalar) {
 }
 
 void Matrix3D::multiplyByMatrix(Matrix3D const & m) {
-	float  newX1 = _rows[0][0] * m[0][0] + _rows[0][1] * m[1][0] + _rows[0][2] * m[2][0] + _rows[0][3] * m[3][0];
-    float  newX2 = _rows[1][0] * m[0][0] + _rows[1][1] * m[1][0] + _rows[1][2] * m[2][0] + _rows[1][3] * m[3][0];
-    float  newX3 = _rows[2][0] * m[0][0] + _rows[2][1] * m[1][0] + _rows[2][2] * m[2][0] + _rows[2][3] * m[3][0];
-    float  newXT = _rows[3][0] * m[0][0] + _rows[3][1] * m[1][0] + _rows[3][2] * m[2][0] + _rows[3][3] * m[3][0];
-	float  newY1 = _rows[0][0] * m[0][1] + _rows[0][1] * m[1][1] + _rows[0][2] * m[2][1] + _rows[0][3] * m[3][1];
-    float  newY2 = _rows[1][0] * m[0][1] + _rows[1][1] * m[1][1] + _rows[1][2] * m[2][1] + _rows[1][3] * m[3][1];
-    float  newY3 = _rows[2][0] * m[0][1] + _rows[2][1] * m[1][1] + _rows[2][2] * m[2][1] + _rows[2][3] * m[3][1];
-    float  newYT = _rows[3][0] * m[0][1] + _rows[3][1] * m[1][1] + _rows[3][2] * m[2][1] + _rows[3][3] * m[3][1];
-	float  newZ1 = _rows[0][0] * m[0][2] + _rows[0][1] * m[1][2] + _rows[0][2] * m[2][2] + _rows[0][3] * m[3][2];
-    float  newZ2 = _rows[1][0] * m[0][2] + _rows[1][1] * m[1][2] + _rows[1][2] * m[2][2] + _rows[1][3] * m[3][2];
-    float  newZ3 = _rows[2][0] * m[0][2] + _rows[2][1] * m[1][2] + _rows[2][2] * m[2][2] + _rows[2][3] * m[3][2];
-    float  newZT = _rows[3][0] * m[0][2] + _rows[3][1] * m[1][2] + _rows[3][2] * m[2][2] + _rows[3][3] * m[3][2];
-	float  newW1 = _rows[0][3] = _rows[0][0] * m[0][3] + _rows[0][1] * m[1][3] + _rows[0][2] * m[2][3] + _rows[0][3] * m[3][3];
-	float  newW2 = _rows[1][3] = _rows[1][0] * m[0][3] + _rows[1][1] * m[1][3] + _rows[1][2] * m[2][3] + _rows[1][3] * m[3][3];
-	float  newW3 = _rows[2][3] = _rows[2][0] * m[0][3] + _rows[2][1] * m[1][3] + _rows[2][2] * m[2][3] + _rows[2][3] * m[3][3];
-	float  newWT = _rows[3][3] = _rows[3][0] * m[0][3] + _rows[3][1] * m[1][3] + _rows[3][2] * m[2][3] + _rows[3][3] * m[3][3];
-	_rows[0][0] = newX1;
-    _rows[1][0] = newX2;
-    _rows[2][0] = newX3;
-    _rows[3][0] = newXT;
-    _rows[0][1] = newY1;
-    _rows[1][1] = newY2;
-    _rows[2][1] = newY3;
-    _rows[3][1] = newYT;
-	_rows[0][2] = newZ1;
-	_rows[1][2] = newZ2;
-	_rows[2][2] = newZ3;
-	_rows[3][2] = newZT;
-	_rows[0][3] = newW1;
-	_rows[1][3] = newW2;
-	_rows[2][3] = newW3;
-	_rows[3][3] = newWT;
+    Matrix3D result;
+    for (int j = 0; j < 4; j++)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            float sum(0);
+
+            for (int n = 0; n < 4; n++)
+            {
+                sum += _rows[n][i] * m[j][n];
+            }
+
+            result[j][i] = sum;
+        }
+    }
+
+    _rows[0][0] = result[0][0];
+    _rows[1][0] = result[1][0];
+    _rows[2][0] = result[2][0];
+    _rows[3][0] = result[3][0];
+    _rows[0][1] = result[0][1];
+    _rows[1][1] = result[1][1];
+    _rows[2][1] = result[2][1];
+    _rows[3][1] = result[3][1];
+    _rows[0][2] = result[0][2];
+    _rows[1][2] = result[1][2];
+    _rows[2][2] = result[2][2];
+    _rows[3][2] = result[3][2];
+    _rows[0][3] = result[0][3];
+    _rows[1][3] = result[1][3];
+    _rows[2][3] = result[2][3];
+    _rows[3][3] = result[3][3];
 //    _detNeedsUpdate = true;
 }
 
