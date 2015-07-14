@@ -8,7 +8,7 @@ class Matrix3D;
 
 class Vector3D {
 public:
-    Vector3D(float x = 0, float y = 0, float z = 0, float w = 1);
+    Vector3D(float x = 0, float y = 0, float z = 0, float w = 0);
 
     static float distanceBetween(Vector3D const &vector1, Vector3D const &vector2);
 

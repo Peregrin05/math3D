@@ -295,6 +295,7 @@ TEST_F(VectorWithMatrixTest, bla) {
 	int yt = 5;
 	int zt = 6;
 	matrix.translate(xt, yt, zt);
+	vector.w(1);
 	vector.multiplyByMatrix(matrix);
 
 	float x = XV1 * X1 + YV1 * X2 + ZV1 * X3;
