@@ -1,5 +1,4 @@
 #import <math.h>
-#include <stdexcept>
 #include "Matrix3D.h"
 
 Vector3D::Vector3D(float x, float y, float z, float w) {
@@ -40,17 +39,14 @@ float Vector3D::_squareRootOfSquareSums(float a, float b, float c) {
 
 void Vector3D::x(float value) {
     _row[0] = value;
-//    _lengthNeedsUpdate = true;
 }
 
 void Vector3D::y(float value) {
     _row[1] = value;
-//    _lengthNeedsUpdate = true;
 }
 
 void Vector3D::z(float value) {
     _row[2] = value;
-//    _lengthNeedsUpdate = true;
 }
 
 void Vector3D::w(float value) {
@@ -58,31 +54,24 @@ void Vector3D::w(float value) {
 }
 
 float Vector3D::length() const {
-//    if (_lengthNeedsUpdate) {
-        _updateLength();
-//    }
-//    return _length;
     return _squareRootOfSquareSums(_row[0], _row[1], _row[2]);
 }
 
 void Vector3D::length(float value) {
     normalize();
     multiplyByScalar(value);
-    _setLengthValue(value);
 }
 
 void Vector3D::add(Vector3D const &vector) {
     _row[0] += vector[0];
     _row[1] += vector[1];
     _row[2] += vector[2];
-//    _lengthNeedsUpdate = true;
 }
 
 void Vector3D::subtract(Vector3D const &vector) {
     _row[0] -= vector[0];
     _row[1] -= vector[1];
     _row[2] -= vector[2];
-//    _lengthNeedsUpdate = true;
 }
 
 void Vector3D::multiplyByMatrix(Matrix3D const &matrix) {
@@ -90,44 +79,21 @@ void Vector3D::multiplyByMatrix(Matrix3D const &matrix) {
 }
 
 Vector3D Vector3D::clone() const {
-    Vector3D cloneVector(_row[0], _row[1], _row[2], _row[3]);
-//    if (!_lengthNeedsUpdate) {
-//        cloneVector._setLengthValue(_length);
-//    }
-    return cloneVector;
+    return Vector3D(_row[0], _row[1], _row[2], _row[3]);
 }
 
 bool Vector3D::isEqualTo(Vector3D const &vector) const {
     return vector.x() == _row[0] && vector.y() == _row[1] && vector.z() == _row[2] && vector.w() == _row[3];
 }
 
-void Vector3D::_updateLength() const {
-    float value = _squareRootOfSquareSums(_row[0], _row[1], _row[2]);
-    _setLengthValue(value);
-}
-
-void Vector3D::_setLengthValue(float value) const {
-//    _length = value;
-//    _lengthNeedsUpdate = false;
-}
-
 void Vector3D::multiplyByScalar(float scalar) {
     _row[0] *= scalar;
     _row[1] *= scalar;
     _row[2] *= scalar;
-//    _lengthNeedsUpdate = true;
 }
 
 void Vector3D::normalize() {
-    if (_isZero()) {
-		throw std::runtime_error("Forbidden operation: attempt to change the length or normalize a zero vector.");
-    }
     multiplyByScalar(1 / length());
-    _setLengthValue(1);
-}
-
-bool Vector3D::_isZero() {
-    return _row[0] == 0 && _row[1] == 0 && _row[2] == 0;;
 }
 
 float Vector3D::operator*(Vector3D &v) const {
@@ -144,7 +110,7 @@ Vector3D Vector3D::operator/(Vector3D &v) const {
     return Vector3D::crossProduct(*this, v);
 }
 
-Vector3D Vector3D::operator*(float scalar) const {
+Vector3D Vector3D::operator*(float scalar)emovedemove const {
     Vector3D resultVector = *this;
     resultVector.multiplyByScalar(scalar);
     return resultVector;

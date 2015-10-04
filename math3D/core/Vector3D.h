@@ -2,8 +2,6 @@
 #define __Vector3D_H_
 
 
-//#include "Matrix3D.h"
-
 class Matrix3D;
 
 class Vector3D {
@@ -65,17 +63,9 @@ public:
     bool operator==(Vector3D& v) const;
 
 private:
-    float _row[4];
-//    mutable float _length;
-//    mutable bool _lengthNeedsUpdate = true;
-
     static float _squareRootOfSquareSums(float a, float b, float c);
 
-    void _updateLength() const;
-
-    void _setLengthValue(float value) const;
-
-    bool _isZero();
+    float _row[4];
 };
 
 

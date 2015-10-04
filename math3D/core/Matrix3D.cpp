@@ -28,73 +28,63 @@ Matrix3D Matrix3D::perspectiveProjection(float fovy, float aspectRatio, float ne
 	Matrix3D matrix;
 	float zoomY = 1 / tanf(fovy * (float) M_PI / 360);
 	float zoomX = zoomY / aspectRatio;
-	float z = (near + far) / (far - near);
-	float zt = (-2 * near * far) / (far - near);
+	float z = (near + far) / (near - far);
+	float zt = (2 * near * far) / (near - far);
 	matrix.x1(zoomX);
 	matrix.y2(zoomY);
 	matrix.z3(z);
 	matrix.zt(zt);
-	matrix.w3(1);
+	matrix.w3(-1);
 	matrix.wt(0);
 	return matrix;
 }
 
-Matrix3D Matrix3D::orthographicProjection(float fovy, float aspectRatio, float near, float far) {
+Matrix3D Matrix3D::orthographicProjection(float left, float right, float bottom, float top, float near, float far) {
 	Matrix3D matrix;
-	float zoomY = 1 / tanf(fovy * (float) M_PI / 360);
-	float zoomX = zoomY / aspectRatio;
-	float z = 2 / (far - near);
-	float zt = -(near + far) / (far - near);
-	matrix.x1(zoomX);
-	matrix.y2(zoomY);
-	matrix.z3(z);
-	matrix.zt(zt);
+    matrix.x1(2.0f / (right - left));
+    matrix.y2(2.0f / (top - bottom));
+    matrix.z3(2.0f / (near - far));
+    matrix.xt((left + right) / (left - right));
+    matrix.yt((bottom + top) / (bottom - top));
+    matrix.zt((near + far) / (far - near));
+    matrix.wt(1.0f);
 	return matrix;
 }
 
 void Matrix3D::x1(float value) {
     _rows[0][0] = value;
-//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::x2(float value) {
     _rows[1][0] = value;
-//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::x3(float value) {
     _rows[2][0] = value;
-//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::y1(float value) {
     _rows[0][1] = value;
-//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::y2(float value) {
     _rows[1][1] = value;
-//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::y3(float value) {
     _rows[2][1] = value;
-//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::z1(float value) {
     _rows[0][2] = value;
-//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::z2(float value) {
     _rows[1][2] = value;
-//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::z3(float value) {
     _rows[2][2] = value;
-//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::xt(float value) {
@@ -126,13 +116,10 @@ void Matrix3D::wt(float value) {
 }
 
 float  Matrix3D::determinant() const {
-//    if (_detNeedsUpdate) {
-        float _determinant =
-        _rows[0][0] * _rows[1][1] * _rows[2][2] + _rows[0][1] * _rows[1][2] * _rows[2][0] + _rows[0][2] * _rows[1][0] *
-                _rows[2][1] - _rows[0][0] * _rows[1][2] * _rows[2][1] - _rows[0][1] * _rows[1][0] *
-                _rows[2][2] - _rows[0][2] * _rows[1][1] * _rows[2][0];
-//        _detNeedsUpdate = false;
-//    }
+    float _determinant =
+    _rows[0][0] * _rows[1][1] * _rows[2][2] + _rows[0][1] * _rows[1][2] * _rows[2][0] + _rows[0][2] * _rows[1][0] *
+            _rows[2][1] - _rows[0][0] * _rows[1][2] * _rows[2][1] - _rows[0][1] * _rows[1][0] *
+            _rows[2][2] - _rows[0][2] * _rows[1][1] * _rows[2][0];
     return _determinant;
 }
 
@@ -158,8 +145,6 @@ void Matrix3D::identity() {
     _rows[2][0] = 0;
     _rows[2][1] = 0;
     _rows[2][2] = 1;
-//    _determinant = 1;
-//    _detNeedsUpdate = false;
 }
 
 void Matrix3D::multiplyByScalar(float scalar) {
@@ -172,7 +157,6 @@ void Matrix3D::multiplyByScalar(float scalar) {
     _rows[2][0] *= scalar;
     _rows[2][1] *= scalar;
     _rows[2][2] *= scalar;
-//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::multiplyByMatrix(Matrix3D const & m) {
@@ -208,7 +192,6 @@ void Matrix3D::multiplyByMatrix(Matrix3D const & m) {
     _rows[1][3] = result[1][3];
     _rows[2][3] = result[2][3];
     _rows[3][3] = result[3][3];
-//    _detNeedsUpdate = true;
 }
 
 void Matrix3D::rotateAboutX(float degrees) {
@@ -219,7 +202,6 @@ void Matrix3D::rotateAboutX(float degrees) {
     _rows[1][2] = sinVal;
     _rows[2][1] = -sinVal;
     _rows[2][2] = cosVal;
-    _checkIfDeterminantNeedUpdateAfterRotation();
 }
 
 void Matrix3D::rotateAboutY(float degrees) {
@@ -230,7 +212,6 @@ void Matrix3D::rotateAboutY(float degrees) {
     _rows[0][2] = -sinVal;
     _rows[2][0] = sinVal;
     _rows[2][2] = cosVal;
-    _checkIfDeterminantNeedUpdateAfterRotation();
 }
 
 void Matrix3D::rotateAboutZ(float degrees) {
@@ -241,11 +222,9 @@ void Matrix3D::rotateAboutZ(float degrees) {
     _rows[0][1] = sinVal;
     _rows[1][0] = -sinVal;
     _rows[1][1] = cosVal;
-    _checkIfDeterminantNeedUpdateAfterRotation();
 }
 
 void Matrix3D::rotateAbout(Vector3D const &vector, float degrees) {
-    _checkUnitVector(vector);
     float radians = (float) (degrees * M_PI / 180);
     float  vx = vector.x();
     float  vy = vector.y();
@@ -265,7 +244,6 @@ void Matrix3D::rotateAbout(Vector3D const &vector, float degrees) {
     _rows[2][0] = vx * vz * cosOp + vySin;
     _rows[2][1] = vy * vz * cosOp - vxSin;
     _rows[2][2] = vz * vz * cosOp + cosVal;
-    _checkIfDeterminantNeedUpdateAfterRotation();
 }
 
 void Matrix3D::scaleAlong(Vector3D const &vector, float factor) {
@@ -273,7 +251,6 @@ void Matrix3D::scaleAlong(Vector3D const &vector, float factor) {
 }
 
 void Matrix3D::scaleAlong(float x, float y, float z, float factor) {
-	_checkUnitVector(x, y, z);
 	float facOp = factor - 1;
 	float y1x2 = facOp * x * y;
 	float z1x3 = facOp * x * z;
@@ -287,10 +264,9 @@ void Matrix3D::scaleAlong(float x, float y, float z, float factor) {
 	_rows[2][0] *= z1x3;
 	_rows[2][1] *= z2y3;
 	_rows[2][2] *= 1 + facOp * z * z;
-//	_detNeedsUpdate = true;
 }
 
-void Matrix3D::scale(float  scaleX, float  scaleY, float  scaleZ) {
+void Matrix3D::scale(float scaleX, float scaleY, float scaleZ) {
 	_rows[0][0] *= scaleX;
 	_rows[0][1] *= scaleX;
 	_rows[0][2] *= scaleX;
@@ -300,11 +276,9 @@ void Matrix3D::scale(float  scaleX, float  scaleY, float  scaleZ) {
 	_rows[2][0] *= scaleZ;
 	_rows[2][1] *= scaleZ;
 	_rows[2][2] *= scaleZ;
-//	_detNeedsUpdate = true;
 }
 
 void Matrix3D::inverse() {
-    _checkNonZeroDeterminant();
     float det = determinant();
     float newX1 = _rows[1][1] * _rows[2][2] - _rows[1][2] * _rows[2][1]; // cofactor 0, 0 +
     float newY1 = _rows[1][2] * _rows[2][0] - _rows[1][0] * _rows[2][2]; // cofactor 0, 1 -
@@ -325,7 +299,6 @@ void Matrix3D::inverse() {
     _rows[2][1] = newY3;
     _rows[2][2] = newZ3;
     transpose();
-//    multiplyByScalar(1 / _determinant);
     multiplyByScalar(1 / det);
 }
 
@@ -336,7 +309,7 @@ bool Matrix3D::isEqual(Matrix3D const &matrix) const {
 }
 
 bool Matrix3D::isClose(Matrix3D const &matrix, unsigned int precision) const {
-    int factor = (int) powf(10, (float) precision);
+    int factor = (int) powf(10, precision);
     return _areClose(matrix.x1(), _rows[0][0], factor) && _areClose(matrix.y1(), _rows[0][1], factor) && _areClose(matrix.z1(), _rows[0][2],
     factor) && _areClose(matrix.x2(), _rows[1][0], factor) && _areClose(matrix.y2(), _rows[1][1],
     factor) && _areClose(matrix.z2(), _rows[1][2], factor) && _areClose(matrix.x3(), _rows[2][0],
@@ -390,7 +363,6 @@ void Matrix3D::orthogonalize() {
 		_performOrthogonalizingAlgorithm();
 	}
 	_performGrandSchmidtOrthogonalizingAlgorithm();
-//	_detNeedsUpdate = true;
 }
 
 void Matrix3D::_performGrandSchmidtOrthogonalizingAlgorithm() {
@@ -453,33 +425,6 @@ bool Matrix3D::_areClose(float value1, float value2, int factor) const {
     const float d1 = roundf(value1 * factor);
     const float d2 = roundf(value2 * factor);
     return d1 == d2;
-}
-
-
-void Matrix3D::_checkIfDeterminantNeedUpdateAfterRotation() const {
-//	if (!_detNeedsUpdate && _determinant != 1) {
-//		_detNeedsUpdate = true;
-//	}
-}
-
-void Matrix3D::_checkUnitVector(Vector3D const &vector) const {
-	if (vector.length() != 1) {
-		throw std::runtime_error("Given vector is not a unit vector.");
-		// throw NotUnitVectorError();
-	}
-}
-
-void Matrix3D::_checkUnitVector(float  x, float  y, float  z) const {
-    if (sqrtf(x * x + y * y + z * z) != 1) {
-		throw std::runtime_error("Given vector is no a unit vector.");
-	}
-}
-
-void Matrix3D::_checkNonZeroDeterminant() const {
-	if (determinant() == 0) {
-		throw std::runtime_error("Matrix's determinant must not be 0.");
-		// throw ZeroDeterminantMatrixError();
-	}
 }
 
 void Matrix3D::multiplyVectorByMatrix(Vector3D &vector, const Matrix3D &matrix) {

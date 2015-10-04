@@ -15,11 +15,11 @@ public:
 
 	Matrix3D();
 
-	static void multiplyVectorByMatrix(Vector3D &vector, const Matrix3D &matrix);
+	static void multiplyVectorByMatrix(Vector3D& vector, const Matrix3D& matrix);
 
 	static Matrix3D perspectiveProjection(float fovy, float aspectRatio, float near, float far);
 
-	static Matrix3D orthographicProjection(float fovy, float aspectRatio, float near, float far);
+	static Matrix3D orthographicProjection(float left, float right, float bottom, float top, float near, float far);
 
     float x1() const { return _rows[0][0]; };
     void x1(float value);
@@ -77,7 +77,7 @@ public:
 
     void multiplyByScalar(float scalar);
 
-    void multiplyByMatrix(Matrix3D const & m);
+    void multiplyByMatrix(const Matrix3D& m);
 
     void rotateAboutX(float degrees);
 
@@ -85,9 +85,9 @@ public:
 
     void rotateAboutZ(float degrees);
 
-	void rotateAbout(Vector3D const &vector, float degrees);
+	void rotateAbout(const Vector3D& vector, float degrees);
 
-	void scaleAlong(Vector3D const &vector, float factor);
+	void scaleAlong(const Vector3D& vector, float factor);
 	void scaleAlong(float x, float y, float z, float factor);
 
 	void scale(float scaleX, float scaleY, float scaleZ);
@@ -96,9 +96,9 @@ public:
 
     Matrix3D clone() const;
 
-    bool isClose(Matrix3D const &matrix, unsigned int precision) const;
+    bool isClose(const Matrix3D& matrix, unsigned precision) const;
 
-    bool isEqual(Matrix3D const &matrix) const;
+    bool isEqual(const Matrix3D& matrix) const;
 
 	bool isOrthogonal() const;
 
@@ -106,28 +106,22 @@ public:
 
 	void translate(float xt, float yt, float zt);
 
-	void transform(Vector3D &vector) const;
+	void transform(Vector3D& vector) const;
 
     Vector3D& operator[](int index);
     const Vector3D& operator[](int index) const;
 
+    inline operator float*() { return &_rows[0][0]; }
+    inline operator const float*() const { return &_rows[0][0]; }
+
 private:
-    Vector3D _rows[4] = {};
-//    mutable float _determinant;
-//    mutable bool _detNeedsUpdate = true;
-
-    void _checkIfDeterminantNeedUpdateAfterRotation() const;
-
-	void _checkUnitVector(Vector3D const &vector) const;
-	void _checkUnitVector(float x, float y, float z) const;
-
-    void _checkNonZeroDeterminant() const;
-
     bool _areClose(float value1, float value2, int factor) const;
 
 	void _performGrandSchmidtOrthogonalizingAlgorithm();
 
 	void _performOrthogonalizingAlgorithm();
+
+    Vector3D _rows[4] = {};
 };
 
 
