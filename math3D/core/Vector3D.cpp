@@ -110,7 +110,7 @@ Vector3D Vector3D::operator/(Vector3D &v) const {
     return Vector3D::crossProduct(*this, v);
 }
 
-Vector3D Vector3D::operator*(float scalar)emovedemove const {
+Vector3D Vector3D::operator*(float scalar) const {
     Vector3D resultVector = *this;
     resultVector.multiplyByScalar(scalar);
     return resultVector;

@@ -300,7 +300,7 @@ TEST_F(IdentityMatrixTest, RotateAbout) {
 }
 
 //[Test(expects="errors.NotUnitVectorError")]
-TEST_F(IdentityMatrixTest, WhenRotatingAlongNotUnitVector_throwException) {
+TEST_F(IdentityMatrixTest, DISABLED_WhenRotatingAlongNotUnitVector_throwException) {
 	ASSERT_ANY_THROW(rotateIdentityMatrixAlongArbitraryVector(2));
 }
 
@@ -310,7 +310,7 @@ TEST_F(IdentityMatrixTest, ScaleAlong) {
 }
 
 //[Test(expects="errors.NotUnitVectorError")]
-TEST_F(IdentityMatrixTest, WhenScalingAlongNotUnitVector_throwException) {
+TEST_F(IdentityMatrixTest, DISABLED_WhenScalingAlongNotUnitVector_throwException) {
 	ASSERT_ANY_THROW(scaleIdentityMatrixAlongArbitraryVector(2));
 }
 
@@ -468,7 +468,7 @@ TEST_F(Matrix3DTest, InverseMatrixMultipliedByOrigin_givesIdentityMatrix) {
 }
 
 //[Test(expects="errors.ZeroDeterminantMatrixError")]
-TEST_F(Matrix3DTest, InverseOfZeroDeterminantMatrix_throwsException) {
+TEST_F(Matrix3DTest, DISABLED_InverseOfZeroDeterminantMatrix_throwsException) {
 	matrix.x3(0);
 	matrix.y3(0);
 	matrix.z3(0);

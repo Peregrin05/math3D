@@ -188,11 +188,11 @@ TEST_F(Vector3DTest, Clone) {
     ASSERT_EQ(cloneVector.length(), vector.length());
 }
 
-TEST_F(ZeroVectorTest, NormalizeThrowsException) {
+TEST_F(ZeroVectorTest, DISABLED_NormalizeThrowsException) {
 	ASSERT_ANY_THROW(zeroVector.normalize());
 }
 
-TEST_F(ZeroVectorTest, SetLengthThrowsException) {
+TEST_F(ZeroVectorTest, DISABLED_SetLengthThrowsException) {
 	ASSERT_ANY_THROW(zeroVector.length(2));
 }
 
