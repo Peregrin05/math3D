@@ -8,6 +8,7 @@ project(math3D_root)
 #    message(SEND_ERROR "In-source builds are not allowed.")
 #endif ()
 
+# TODO: figure out why compiling from root causes linker error (or permission)
 set (CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -std=c++14 -Wall -Wno-missing-braces")
 
 set (CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)

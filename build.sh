@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 g++ -Wall -std=c++11 math3D/core/Matrix3D.cpp math3D/core/Vector3D.cpp math3D/orientation/EulerAngles.cpp math3D/orientation/Orientation.cpp math3D/orientation/Quaternion.cpp -c
 if [[ -d "build" && ! -L "build" ]] ; then
     rm -r build

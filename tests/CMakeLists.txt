@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(tests)
 
+set (CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -std=c++14 -Wall -Wno-missing-braces")
+
 include_directories(${SOURCE_DIR})
 
 find_library(TEST_LIB
@@ -9,7 +11,7 @@ find_library(TEST_LIB
         )
 
 set (math3D_SOURCE_DIR ../math3D)
-add_subdirectory(${math3D_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}/lib)
+add_subdirectory(${math3D_SOURCE_DIR} ${CMAKE_BINARY_DIR}/math3D)
 
 include_directories(
         ${math3D_INCLUDE_DIRS}
