@@ -1,6 +1,10 @@
-find_library(TEST_LIB
-        NAMES gtest gmock
-        PATHS libs)
+set (GMOCK_DIR ${DEPENDENCIES_DIR}/googletest/googlemock)
+set (GTEST_DIR ${DEPENDENCIES_DIR}/googletest/googletest)
+
+add_subdirectory(${GMOCK_DIR} ${CMAKE_BINARY_DIR}/gmock)
+set_target_properties(gmock PROPERTIES COMPILE_FLAGS " -w")
+
+include_directories(${GMOCK_DIR}/include ${GTEST_DIR}/include)
 
 # add_gmock_test(<target> <sources>...)
 #
@@ -10,12 +14,13 @@ find_library(TEST_LIB
 function(add_gmock_test target)
     add_executable(${target} ${ARGN})
     set_target_properties(${target} PROPERTIES LINKER_LANGUAGE CXX)
-    target_link_libraries(${target} ${TEST_LIB})
+        message(${gmock_BINARY_DIR} ${gtest_BINARY_DIR})
+    target_link_libraries(${target} gmock gtest)
     add_test(${target} ${target})
 
-    add_custom_command(
-            TARGET ${target}
-            POST_BUILD COMMAND ${target}
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-            COMMENT "Running ${target}" VERBATIM)
+#    add_custom_command(
+#            TARGET ${target}
+#            POST_BUILD COMMAND ${target}
+#            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+#            COMMENT "Running ${target}" VERBATIM)
 endfunction()
