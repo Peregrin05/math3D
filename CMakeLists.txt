@@ -1,15 +1,16 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(math3D_root)
 
-#set (CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-#set (CMAKE_DISABLE_SOURCE_CHANGES ON)
+set (CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+set (CMAKE_DISABLE_SOURCE_CHANGES ON)
 
-#if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
-#    message(SEND_ERROR "In-source builds are not allowed.")
-#endif ()
+if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+    message(SEND_ERROR "In-source builds are not allowed.")
+endif ()
 
-# TODO: figure out why compiling from root causes linker error (or permission)
 set (CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -std=c++14 -Wall -Wno-missing-braces")
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 set (CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
