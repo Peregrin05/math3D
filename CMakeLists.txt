@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.4)
-project(math3D_root)
+project(flash_math_project)
 
 set (CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set (CMAKE_DISABLE_SOURCE_CHANGES ON)
