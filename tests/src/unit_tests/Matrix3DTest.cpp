@@ -2,8 +2,10 @@
 #include "gmock/gmock.h"
 #include "Matrix3D.h"
 
-using namespace std;
 using namespace testing;
+using namespace flash::math;
+
+using std::array;
 
 const float X1 = 3;
 const float Y1 = 2;

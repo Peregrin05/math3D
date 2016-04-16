@@ -4,6 +4,7 @@
 #include "Matrix3D.h"
 
 using namespace testing;
+using namespace flash::math;
 
 const float VALUE = 5;
 const float XV1 = 2;

@@ -2,6 +2,7 @@
 #include "EulerAngles.h"
 
 using namespace testing;
+using namespace flash::math;
 
 float const DELTA = 0.006;
 float const EA_DELTA = 0.03;

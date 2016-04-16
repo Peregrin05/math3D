@@ -1,6 +1,8 @@
 #include <gmock/gmock.h>
 #include "Orientation.h"
 
+using namespace flash::math;
+
 const static float radialMult = (float const) (M_PI / 180);
 
 class OrientationTest : public testing::Test {
