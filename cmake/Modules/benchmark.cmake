@@ -1,7 +1,8 @@
 set (BENCHMARK_DIR ${DEPENDENCIES_DIR}/benchmark)
 
 add_subdirectory(${BENCHMARK_DIR} ${CMAKE_BINARY_DIR}/benchmark)
-set_target_properties(gmock PROPERTIES COMPILE_FLAGS " -w")
+set_target_properties(benchmark PROPERTIES COMPILE_FLAGS " -w")
+target_compile_definitions(benchmark PRIVATE CMAKE_BUILD_TYPE=Release BENCHMARK_ENABLE_LTO=true)
 
 include_directories(${BENCHMARK_DIR}/include)
 
@@ -12,6 +13,7 @@ include_directories(${BENCHMARK_DIR}/include)
 function(add_benchmark target)
     add_executable(${target} ${ARGN})
     set_target_properties(${target} PROPERTIES LINKER_LANGUAGE CXX)
+    set_target_properties(${target} PROPERTIES COMPILE_FLAGS " -O0")
     target_link_libraries(${target} benchmark)
 
 #    add_custom_command(

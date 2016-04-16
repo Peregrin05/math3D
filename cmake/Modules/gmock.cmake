@@ -14,7 +14,6 @@ include_directories(${GMOCK_DIR}/include ${GTEST_DIR}/include)
 function(add_gmock_test target)
     add_executable(${target} ${ARGN})
     set_target_properties(${target} PROPERTIES LINKER_LANGUAGE CXX)
-        message(${gmock_BINARY_DIR} ${gtest_BINARY_DIR})
     target_link_libraries(${target} gmock gtest)
     add_test(${target} ${target})
 
