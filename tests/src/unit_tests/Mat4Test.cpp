@@ -51,7 +51,7 @@ const float ORTH_X3 = 0.38930973802474783f;
 const float ORTH_Y3 = 0.2635024648875364f;
 const float ORTH_Z3 = 0.8826122471829262f;
 
-class Matrix3DTest : public Test {
+class Mat4Test : public Test {
 public:
     Mat4 matrix;
 
@@ -74,10 +74,10 @@ Vec4 _createArbitraryVector(float length = 1) {
 	return vector;
 }
 
-class MatrixDeterminantIsUpdatedTest : public Matrix3DTest {
+class MatrixDeterminantIsUpdatedTest : public Mat4Test {
 public:
 	void SetUp() override {
-		Matrix3DTest::SetUp();
+		Mat4Test::SetUp();
 		oldDeterminant = matrix.determinant();
 	}
 
@@ -119,12 +119,12 @@ public:
 	Mat4 orthogonalMatrix;
 };
 
-class TwoMatricesTest : public Matrix3DTest {
+class TwoMatricesTest : public Mat4Test {
 public:
     Mat4 matrix2;
 
     void SetUp() override {
-        Matrix3DTest::SetUp();
+        Mat4Test::SetUp();
         matrix2.x1(P1);
         matrix2.y1(Q1);
         matrix2.z1(R1);

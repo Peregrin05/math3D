@@ -24,7 +24,7 @@ const float X3 = 2;
 const float Y3 = 1;
 const float Z3 = 3;
 
-class Vector3DTest : public testing::Test {
+class Vec4Test : public testing::Test {
 public:
     Vec4 vector;
 
@@ -41,12 +41,12 @@ public:
     }
 };
 
-class TwoVectorsTest : public Vector3DTest {
+class TwoVectorsTest : public Vec4Test {
 public:
     Vec4 vector2;
 
     void SetUp() override {
-        Vector3DTest::SetUp();
+        Vec4Test::SetUp();
         vector2.x = XV2;
         vector2.y = YV2;
         vector2.z = ZV2;
@@ -60,12 +60,12 @@ public:
     Vec4 zeroVector;
 };
 
-class VectorWithMatrixTest : public Vector3DTest {
+class VectorWithMatrixTest : public Vec4Test {
 public:
     Mat4 matrix;
 
     void SetUp() override {
-        Vector3DTest::SetUp();
+        Vec4Test::SetUp();
         matrix.x1(X1);
         matrix.y1(Y1);
         matrix.z1(Z1);
