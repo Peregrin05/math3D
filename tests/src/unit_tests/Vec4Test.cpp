@@ -78,7 +78,7 @@ public:
     }
 };
 
-TEST_F(Vector3DTest, ConstructorArgumentsSetXYZW) {
+TEST_F(Vec4Test, ConstructorArgumentsSetXYZW) {
     float x(1);
     float y(2);
     float z(3);
@@ -88,17 +88,17 @@ TEST_F(Vector3DTest, ConstructorArgumentsSetXYZW) {
     ASSERT_EQ(z, vector.z);
 }
 
-TEST_F(Vector3DTest, SettersGettersXYZW) {
+TEST_F(Vec4Test, SettersGettersXYZW) {
     ASSERT_EQ(XV1, vector.x);
     ASSERT_EQ(YV1, vector.y);
     ASSERT_EQ(ZV1, vector.z);
 }
 
-TEST_F(Vector3DTest, AfterConstructed_lengthIsCalculated) {
+TEST_F(Vec4Test, AfterConstructed_lengthIsCalculated) {
     ASSERT_EQ(sqrtf(XV1 * XV1 + YV1 * YV1 + ZV1 * ZV1), vector.length());
 }
 
-TEST_F(Vector3DTest, SettingLength_changesXYZProperly) {
+TEST_F(Vec4Test, SettingLength_changesXYZProperly) {
     float currentLength(vector.length());
     float newLength(currentLength + 2);
     float ratio(currentLength / newLength);
@@ -109,62 +109,62 @@ TEST_F(Vector3DTest, SettingLength_changesXYZProperly) {
     ASSERT_EQ(ZV1 / ratio, vector.z);
 }
 
-TEST_F(Vector3DTest, Normalize_setsLengthTo1) {
+TEST_F(Vec4Test, Normalize_setsLengthTo1) {
     vector.normalize();
 
     ASSERT_EQ(1, vector.length());
 }
 
-TEST_F(Vector3DTest, NormalizeOfXVector_setsXTo1) {
+TEST_F(Vec4Test, NormalizeOfXVector_setsXTo1) {
     Vec4 vector(VALUE);
     vector.normalize();
 
     ASSERT_EQ(1, vector.x);
 }
 
-TEST_F(Vector3DTest, NormalizeOfYVector_setsYTo1) {
+TEST_F(Vec4Test, NormalizeOfYVector_setsYTo1) {
     Vec4 vector(0, VALUE);
     vector.normalize();
 
     ASSERT_EQ(1, vector.y);
 }
 
-TEST_F(Vector3DTest, NormalizeOfZVector_setsZTo1) {
+TEST_F(Vec4Test, NormalizeOfZVector_setsZTo1) {
     Vec4 vector(0, 0, VALUE);
     vector.normalize();
 
     ASSERT_EQ(1, vector.z);
 }
 
-TEST_F(Vector3DTest, SettingX_updatesLength) {
+TEST_F(Vec4Test, SettingX_updatesLength) {
     float oldLength(vector.length());
     vector.x += 1;
 
     ASSERT_NE(oldLength, vector.length());
 }
 
-TEST_F(Vector3DTest, SettingY_updatesLength) {
+TEST_F(Vec4Test, SettingY_updatesLength) {
     float oldLength(vector.length());
     vector.y += 1;
 
     ASSERT_NE(oldLength, vector.length());
 }
 
-TEST_F(Vector3DTest, SettingZ_updatesLength) {
+TEST_F(Vec4Test, SettingZ_updatesLength) {
     float oldLength(vector.length());
     vector.z += 1;
 
     ASSERT_NE(oldLength, vector.length());
 }
 
-TEST_F(Vector3DTest, SettingW_doesNotUpdateLength) {
+TEST_F(Vec4Test, SettingW_doesNotUpdateLength) {
 	float oldLength(vector.length());
 	vector.w += 1;
 
 	ASSERT_THAT(vector.length(), Eq(oldLength));
 }
 
-TEST_F(Vector3DTest, MultiplyByScalar) {
+TEST_F(Vec4Test, MultiplyByScalar) {
     int multiplier(5);
 
     vector.multiplyByScalar(multiplier);
@@ -173,14 +173,14 @@ TEST_F(Vector3DTest, MultiplyByScalar) {
     ASSERT_EQ(ZV1 * multiplier, vector.z);
 }
 
-TEST_F(Vector3DTest, AfterMultiplyByScalar_lengthIsUpdated) {
+TEST_F(Vec4Test, AfterMultiplyByScalar_lengthIsUpdated) {
     float oldLength(vector.length());
     vector.multiplyByScalar(5);
 
     ASSERT_NE(oldLength, vector.length());
 }
 
-TEST_F(Vector3DTest, Clone) {
+TEST_F(Vec4Test, Clone) {
     Vec4 cloneVector = vector.clone();
 
     ASSERT_EQ(cloneVector.x, vector.x);
