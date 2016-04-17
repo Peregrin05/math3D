@@ -1,7 +1,7 @@
 #include <math.h>
 #include <gmock/gmock-matchers.h>
 #include "gtest/gtest.h"
-#include "Matrix3D.h"
+#include "Mat4.h"
 
 using namespace testing;
 using namespace flash::math;
@@ -26,30 +26,30 @@ const float Z3 = 3;
 
 class Vector3DTest : public testing::Test {
 public:
-    Vector3D vector;
+    Vec4 vector;
 
     void SetUp() override {
-        vector.x(XV1);
-        vector.y(YV1);
-        vector.z(ZV1);
+        vector.x = XV1;
+        vector.y = YV1;
+        vector.z = ZV1;
     }
 
-    void assertEquals(Vector3D vector, float x, float y, float z) {
-        ASSERT_EQ(x, vector.x());
-        ASSERT_EQ(y, vector.y());
-        ASSERT_EQ(z, vector.z());
+    void assertEquals(Vec4 vector, float x, float y, float z) {
+        ASSERT_EQ(x, vector.x);
+        ASSERT_EQ(y, vector.y);
+        ASSERT_EQ(z, vector.z);
     }
 };
 
 class TwoVectorsTest : public Vector3DTest {
 public:
-    Vector3D vector2;
+    Vec4 vector2;
 
     void SetUp() override {
         Vector3DTest::SetUp();
-        vector2.x(XV2);
-        vector2.y(YV2);
-        vector2.z(ZV2);
+        vector2.x = XV2;
+        vector2.y = YV2;
+        vector2.z = ZV2;
     }
 };
 
@@ -57,12 +57,12 @@ class ZeroVectorTest : public testing::Test {
 public:
     ZeroVectorTest() : zeroVector(0, 0, 0) {}
 
-    Vector3D zeroVector;
+    Vec4 zeroVector;
 };
 
 class VectorWithMatrixTest : public Vector3DTest {
 public:
-    Matrix3D matrix;
+    Mat4 matrix;
 
     void SetUp() override {
         Vector3DTest::SetUp();
@@ -82,16 +82,16 @@ TEST_F(Vector3DTest, ConstructorArgumentsSetXYZW) {
     float x(1);
     float y(2);
     float z(3);
-    vector = Vector3D(x, y, z);
-    ASSERT_EQ(x, vector.x());
-    ASSERT_EQ(y, vector.y());
-    ASSERT_EQ(z, vector.z());
+    vector = Vec4(x, y, z);
+    ASSERT_EQ(x, vector.x);
+    ASSERT_EQ(y, vector.y);
+    ASSERT_EQ(z, vector.z);
 }
 
 TEST_F(Vector3DTest, SettersGettersXYZW) {
-    ASSERT_EQ(XV1, vector.x());
-    ASSERT_EQ(YV1, vector.y());
-    ASSERT_EQ(ZV1, vector.z());
+    ASSERT_EQ(XV1, vector.x);
+    ASSERT_EQ(YV1, vector.y);
+    ASSERT_EQ(ZV1, vector.z);
 }
 
 TEST_F(Vector3DTest, AfterConstructed_lengthIsCalculated) {
@@ -102,11 +102,11 @@ TEST_F(Vector3DTest, SettingLength_changesXYZProperly) {
     float currentLength(vector.length());
     float newLength(currentLength + 2);
     float ratio(currentLength / newLength);
-    vector.length(newLength);
+    vector.setLength(newLength);
 
-    ASSERT_EQ(XV1 / ratio, vector.x());
-    ASSERT_EQ(YV1 / ratio, vector.y());
-    ASSERT_EQ(ZV1 / ratio, vector.z());
+    ASSERT_EQ(XV1 / ratio, vector.x);
+    ASSERT_EQ(YV1 / ratio, vector.y);
+    ASSERT_EQ(ZV1 / ratio, vector.z);
 }
 
 TEST_F(Vector3DTest, Normalize_setsLengthTo1) {
@@ -116,50 +116,50 @@ TEST_F(Vector3DTest, Normalize_setsLengthTo1) {
 }
 
 TEST_F(Vector3DTest, NormalizeOfXVector_setsXTo1) {
-    Vector3D vector(VALUE);
+    Vec4 vector(VALUE);
     vector.normalize();
 
-    ASSERT_EQ(1, vector.x());
+    ASSERT_EQ(1, vector.x);
 }
 
 TEST_F(Vector3DTest, NormalizeOfYVector_setsYTo1) {
-    Vector3D vector(0, VALUE);
+    Vec4 vector(0, VALUE);
     vector.normalize();
 
-    ASSERT_EQ(1, vector.y());
+    ASSERT_EQ(1, vector.y);
 }
 
 TEST_F(Vector3DTest, NormalizeOfZVector_setsZTo1) {
-    Vector3D vector(0, 0, VALUE);
+    Vec4 vector(0, 0, VALUE);
     vector.normalize();
 
-    ASSERT_EQ(1, vector.z());
+    ASSERT_EQ(1, vector.z);
 }
 
 TEST_F(Vector3DTest, SettingX_updatesLength) {
     float oldLength(vector.length());
-    vector.x(vector.x() + 1);
+    vector.x += 1;
 
     ASSERT_NE(oldLength, vector.length());
 }
 
 TEST_F(Vector3DTest, SettingY_updatesLength) {
     float oldLength(vector.length());
-    vector.y(vector.y() + 1);
+    vector.y += 1;
 
     ASSERT_NE(oldLength, vector.length());
 }
 
 TEST_F(Vector3DTest, SettingZ_updatesLength) {
     float oldLength(vector.length());
-    vector.z(vector.z() + 1);
+    vector.z += 1;
 
     ASSERT_NE(oldLength, vector.length());
 }
 
 TEST_F(Vector3DTest, SettingW_doesNotUpdateLength) {
 	float oldLength(vector.length());
-	vector.w(vector.w() + 1);
+	vector.w += 1;
 
 	ASSERT_THAT(vector.length(), Eq(oldLength));
 }
@@ -168,9 +168,9 @@ TEST_F(Vector3DTest, MultiplyByScalar) {
     int multiplier(5);
 
     vector.multiplyByScalar(multiplier);
-    ASSERT_EQ(XV1 * multiplier, vector.x());
-    ASSERT_EQ(YV1 * multiplier, vector.y());
-    ASSERT_EQ(ZV1 * multiplier, vector.z());
+    ASSERT_EQ(XV1 * multiplier, vector.x);
+    ASSERT_EQ(YV1 * multiplier, vector.y);
+    ASSERT_EQ(ZV1 * multiplier, vector.z);
 }
 
 TEST_F(Vector3DTest, AfterMultiplyByScalar_lengthIsUpdated) {
@@ -181,11 +181,11 @@ TEST_F(Vector3DTest, AfterMultiplyByScalar_lengthIsUpdated) {
 }
 
 TEST_F(Vector3DTest, Clone) {
-    Vector3D cloneVector = vector.clone();
+    Vec4 cloneVector = vector.clone();
 
-    ASSERT_EQ(cloneVector.x(), vector.x());
-    ASSERT_EQ(cloneVector.y(), vector.y());
-    ASSERT_EQ(cloneVector.z(), vector.z());
+    ASSERT_EQ(cloneVector.x, vector.x);
+    ASSERT_EQ(cloneVector.y, vector.y);
+    ASSERT_EQ(cloneVector.z, vector.z);
     ASSERT_EQ(cloneVector.length(), vector.length());
 }
 
@@ -194,14 +194,14 @@ TEST_F(ZeroVectorTest, DISABLED_NormalizeThrowsException) {
 }
 
 TEST_F(ZeroVectorTest, DISABLED_SetLengthThrowsException) {
-	ASSERT_ANY_THROW(zeroVector.length(2));
+	ASSERT_ANY_THROW(zeroVector.setLength(2));
 }
 
 TEST_F(TwoVectorsTest, Add) {
     vector.add(vector2);
-    ASSERT_EQ(XV1 + XV2, vector.x());
-    ASSERT_EQ(YV1 + YV2, vector.y());
-    ASSERT_EQ(ZV1 + ZV2, vector.z());
+    ASSERT_EQ(XV1 + XV2, vector.x);
+    ASSERT_EQ(YV1 + YV2, vector.y);
+    ASSERT_EQ(ZV1 + ZV2, vector.z);
 }
 
 TEST_F(TwoVectorsTest, AfterAdd_lengthIsUpdated) {
@@ -212,9 +212,9 @@ TEST_F(TwoVectorsTest, AfterAdd_lengthIsUpdated) {
 
 TEST_F(TwoVectorsTest, Subtract) {
     vector.subtract(vector2);
-    ASSERT_EQ(XV1 - XV2, vector.x());
-    ASSERT_EQ(YV1 - YV2, vector.y());
-    ASSERT_EQ(ZV1 - ZV2, vector.z());
+    ASSERT_EQ(XV1 - XV2, vector.x);
+    ASSERT_EQ(YV1 - YV2, vector.y);
+    ASSERT_EQ(ZV1 - ZV2, vector.z);
 }
 
 TEST_F(TwoVectorsTest, AfterSubtract_lengthIsUpdated) {
@@ -224,55 +224,55 @@ TEST_F(TwoVectorsTest, AfterSubtract_lengthIsUpdated) {
 }
 
 TEST_F(TwoVectorsTest, DistanceBetween) {
-    float distance(Vector3D::distanceBetween(vector, vector2));
+    float distance(Vec4::distanceBetween(vector, vector2));
     vector2.subtract(vector);
     ASSERT_EQ(vector2.length(), distance);
 }
 
 TEST_F(TwoVectorsTest, DotProduct) {
-    float dotProduct(Vector3D::dotProduct(vector, vector2));
+    float dotProduct(Vec4::dotProduct(vector, vector2));
 
-    ASSERT_EQ(vector2.x() * vector.x() + vector2.y() * vector.y() + vector2.z() * vector.z(), dotProduct);
+    ASSERT_EQ(vector2.x * vector.x + vector2.y * vector.y + vector2.z * vector.z, dotProduct);
 }
 
 TEST_F(TwoVectorsTest, AngleBetween) {
-    float angle(Vector3D::angleBetween(vector, vector2));
+    float angle(Vec4::angleBetween(vector, vector2));
     vector.normalize();
     vector2.normalize();
 
-    float dotProduct = Vector3D::dotProduct(vector, vector2);
+    float dotProduct = Vec4::dotProduct(vector, vector2);
 
     ASSERT_EQ((float) (acosf(dotProduct) * 180 / M_PI), angle);
 }
 
 TEST_F(TwoVectorsTest, CrossProduct) {
-    Vector3D crossProduct = Vector3D::crossProduct(vector, vector2);
+    Vec4 crossProduct = Vec4::crossProduct(vector, vector2);
 
-    ASSERT_EQ(vector.y() * vector2.z() - vector.z() * vector2.y(), crossProduct.x());
-    ASSERT_EQ(vector.z() * vector2.x() - vector.x() * vector2.z(), crossProduct.y());
-    ASSERT_EQ(vector.x() * vector2.y() - vector.y() * vector2.x(), crossProduct.z());
+    ASSERT_EQ(vector.y * vector2.z - vector.z * vector2.y, crossProduct.x);
+    ASSERT_EQ(vector.z * vector2.x - vector.x * vector2.z, crossProduct.y);
+    ASSERT_EQ(vector.x * vector2.y - vector.y * vector2.x, crossProduct.z);
 }
 
 TEST_F(TwoVectorsTest, CcrossProductOfTwoAxisGivesThird) {
-    Vector3D xAxis(1);
-    Vector3D yAxis(0, 1);
-    Vector3D zAxis(0, 0, 1);
+    Vec4 xAxis(1);
+    Vec4 yAxis(0, 1);
+    Vec4 zAxis(0, 0, 1);
 
-    ASSERT_TRUE(Vector3D::crossProduct(xAxis, yAxis).isEqualTo(zAxis));
-    ASSERT_TRUE(Vector3D::crossProduct(yAxis, zAxis).isEqualTo(xAxis));
-    ASSERT_TRUE(Vector3D::crossProduct(zAxis, xAxis).isEqualTo(yAxis));
+    ASSERT_TRUE(Vec4::crossProduct(xAxis, yAxis).isEqualTo(zAxis));
+    ASSERT_TRUE(Vec4::crossProduct(yAxis, zAxis).isEqualTo(xAxis));
+    ASSERT_TRUE(Vec4::crossProduct(zAxis, xAxis).isEqualTo(yAxis));
 
-    Vector3D xAxisNegative(-1);
-    Vector3D yAxisNegative(0, -1);
-    Vector3D zAxisNegative(0, 0, -1);
+    Vec4 xAxisNegative(-1);
+    Vec4 yAxisNegative(0, -1);
+    Vec4 zAxisNegative(0, 0, -1);
 
-    ASSERT_TRUE(Vector3D::crossProduct(yAxis, xAxis).isEqualTo(zAxisNegative));
-    ASSERT_TRUE(Vector3D::crossProduct(zAxis, yAxis).isEqualTo(xAxisNegative));
-    ASSERT_TRUE(Vector3D::crossProduct(xAxis, zAxis).isEqualTo(yAxisNegative));
+    ASSERT_TRUE(Vec4::crossProduct(yAxis, xAxis).isEqualTo(zAxisNegative));
+    ASSERT_TRUE(Vec4::crossProduct(zAxis, yAxis).isEqualTo(xAxisNegative));
+    ASSERT_TRUE(Vec4::crossProduct(xAxis, zAxis).isEqualTo(yAxisNegative));
 }
 
 TEST_F(TwoVectorsTest, IsEqualToTrue) {
-    ASSERT_TRUE(vector.isEqualTo(Vector3D(XV1, YV1, ZV1)));
+    ASSERT_TRUE(vector.isEqualTo(Vec4(XV1, YV1, ZV1)));
 }
 
 TEST_F(TwoVectorsTest, IsEqualToFalse) {
@@ -296,7 +296,7 @@ TEST_F(VectorWithMatrixTest, bla) {
 	int yt = 5;
 	int zt = 6;
 	matrix.translate(xt, yt, zt);
-	vector.w(1);
+	vector.w = 1;
 	vector.multiplyByMatrix(matrix);
 
 	float x = XV1 * X1 + YV1 * X2 + ZV1 * X3;
@@ -310,7 +310,7 @@ TEST_F(VectorWithMatrixTest, bla2) {
 	int yt = 5;
 	int zt = 6;
 	matrix.translate(xt, yt, zt);
-	vector.w(0);
+	vector.w = 0;
 	vector.multiplyByMatrix(matrix);
 
 	float x = XV1 * X1 + YV1 * X2 + ZV1 * X3;

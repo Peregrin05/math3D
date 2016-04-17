@@ -24,7 +24,7 @@ public:
 
 	void setAxisAngle(float angle, float vx, float vy, float vz) {
 		float toRadians = (float) (M_PI / 180);
-		quaternion = Quaternion(angle * toRadians, Vector3D(vx, vy, vz));
+		quaternion = Quaternion(angle * toRadians, Vec4(vx, vy, vz));
 	}
 
 	void reset() {
@@ -41,7 +41,7 @@ public:
 		ASSERT_THAT(q.z(), FloatNear(z, DELTA));
 	}
 
-	void assertClose(Matrix3D matrix, float x1, float y1, float z1, float x2, float y2, float z2, float x3,
+	void assertClose(Mat4 matrix, float x1, float y1, float z1, float x2, float y2, float z2, float x3,
 			float y3, float z3) {
 		ASSERT_THAT(matrix.x1(), FloatNear(x1, DELTA));
 		ASSERT_THAT(matrix.y1(), FloatNear(y1, DELTA));
@@ -115,7 +115,7 @@ TEST_F(QuaternionTest, ToMatrix) {
 
 TEST_F(QuaternionTest, FromMatrix) {
 	setAxisAngle(98.4, -0.863f, -0.357f, -0.357f);
-	const Matrix3D matrix = quaternion.toMatrix();
+	const Mat4 matrix = quaternion.toMatrix();
 	const Quaternion q = Quaternion::fromMatrix(matrix);
 	assertClose(q, q.w(), q.x(), q.y(), q.z());
 }

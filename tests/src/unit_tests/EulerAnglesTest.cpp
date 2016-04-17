@@ -81,8 +81,8 @@ public:
 			float y3, float z3) {
 		assertClose(eulerAngles.toUprightMatrix(), x1, y1, z1, x2, y2, z2, x3, y3, z3);
 		assertClose(eulerAngles.toObjectMatrix(), x1, x2, x3, y1, y2, y3, z1, z2, z3);
-        Matrix3D um(x1, y1, z1, x2, y2, z2, x3, y3, z3);
-        Matrix3D om(x1, x2, x3, y1, y2, y3, z1, z2, z3);
+        Mat4 um(x1, y1, z1, x2, y2, z2, x3, y3, z3);
+        Mat4 om(x1, x2, x3, y1, y2, y3, z1, z2, z3);
         /*EulerAngles ue = EulerAngles::fromUprightMatrix(um);
         EulerAngles oe = EulerAngles::fromObjectMatrix(om);
         ASSERT_THAT(eulerAngles.heading(), FloatNear(ue.heading(), DELTA));
@@ -94,7 +94,7 @@ public:
         ASSERT_THAT(eulerAngles.bank(), FloatNear(oe.bank(), DELTA));*/
 	}
 
-	void assertClose(Matrix3D matrix, float x1, float y1, float z1, float x2, float y2, float z2, float x3,
+	void assertClose(Mat4 matrix, float x1, float y1, float z1, float x2, float y2, float z2, float x3,
 			float y3, float z3) {
 		ASSERT_THAT(matrix.x1(), FloatNear(x1, DELTA));
 		ASSERT_THAT(matrix.y1(), FloatNear(y1, DELTA));
@@ -278,7 +278,7 @@ TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrix) {
 
 TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrixBlaBla) {
     set(-135, -45, 0);
-    Matrix3D m(-0.707f, 0, 0.707, 0.5, 0.707, 0.5, -0.5f, 0.707, -0.5f);
+    Mat4 m(-0.707f, 0, 0.707, 0.5, 0.707, 0.5, -0.5f, 0.707, -0.5f);
     eulerAngles = EulerAngles::fromUprightMatrix(m);
     ASSERT_THAT(eulerAngles.heading(), FloatNear(-135, DELTA));
     ASSERT_THAT(eulerAngles.pitch(), FloatNear(-45, DELTA));
@@ -287,7 +287,7 @@ TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrixBlaBla) {
 
 TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrixBlaBlaBla) {
     set(-135, -45, 0);
-    Matrix3D m(-0.707f, 0, 0.707, 0.5, 0.707, 0.5, -0.5f, 0.707, -0.5f);
+    Mat4 m(-0.707f, 0, 0.707, 0.5, 0.707, 0.5, -0.5f, 0.707, -0.5f);
     m.transpose();
     eulerAngles = EulerAngles::fromObjectMatrix(m);
     ASSERT_THAT(eulerAngles.heading(), FloatNear(-135, DELTA));
@@ -295,7 +295,7 @@ TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrixBlaBlaBla) {
     ASSERT_THAT(eulerAngles.bank(), FloatNear(0, DELTA));
 
     set(123, 33.5f, -32.7f);
-    m = Matrix3D(-0.713f, -0.45f, -0.538f, 0.091, 0.702, -0.706f, 0.696, -0.552f, -0.46f);
+    m = Mat4(-0.713f, -0.45f, -0.538f, 0.091, 0.702, -0.706f, 0.696, -0.552f, -0.46f);
     m.transpose();
     eulerAngles = EulerAngles::fromObjectMatrix(m);
     ASSERT_THAT(eulerAngles.heading(), FloatNear(123, 0.5));
@@ -307,7 +307,7 @@ TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrixBlaBlaBla) {
 /*
 TEST_F(EulerAnglesConvertToMatrixTest, FromUprightMatrix) {
     set(180, 45, 180);
-    Matrix3D matrix = eulerAngles.toUprightMatrix();
+    Mat4 matrix = eulerAngles.toUprightMatrix();
     eulerAngles = EulerAngles::fromUprightMatrix(matrix);
     ASSERT_THAT(eulerAngles.heading(), FloatNear(180, DELTA));
     ASSERT_THAT(eulerAngles.pitch(), FloatNear(45, DELTA));
@@ -316,7 +316,7 @@ TEST_F(EulerAnglesConvertToMatrixTest, FromUprightMatrix) {
 
 TEST_F(EulerAnglesConvertToMatrixTest, FromObjectMatrix) {
 	set(180, 45, 180);
-	Matrix3D oMatrix = eulerAngles.toObjectMatrix();
+	Mat4 oMatrix = eulerAngles.toObjectMatrix();
 	eulerAngles = EulerAngles::fromObjectMatrix(oMatrix);
 	ASSERT_THAT(eulerAngles.heading(), FloatNear(180, DELTA));
 	ASSERT_THAT(eulerAngles.pitch(), FloatNear(45, DELTA));

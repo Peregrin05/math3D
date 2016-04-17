@@ -1,6 +1,6 @@
 #include <array>
 #include "gmock/gmock.h"
-#include "Matrix3D.h"
+#include "Mat4.h"
 
 using namespace testing;
 using namespace flash::math;
@@ -53,7 +53,7 @@ const float ORTH_Z3 = 0.8826122471829262f;
 
 class Matrix3DTest : public Test {
 public:
-    Matrix3D matrix;
+    Mat4 matrix;
 
     void SetUp() override {
         matrix.x1(X1);
@@ -68,9 +68,9 @@ public:
     }
 };
 
-Vector3D _createArbitraryVector(float length = 1) {
-	Vector3D vector = Vector3D(0.2666, -0.5347f, 0.8019);
-	vector.length(length);
+Vec4 _createArbitraryVector(float length = 1) {
+	Vec4 vector = Vec4(0.2666, -0.5347f, 0.8019);
+	vector.setLength(length);
 	return vector;
 }
 
@@ -100,7 +100,7 @@ class IdentityMatrixTest : public Test {
 public:
     IdentityMatrixTest() : identityMatrix(1, 0, 0, 0, 1, 0, 0, 0, 1) {}
 
-    Matrix3D identityMatrix;
+    Mat4 identityMatrix;
 
     void scaleIdentityMatrixAlongArbitraryVector(float vectorLength = 1) {
 		identityMatrix.scaleAlong(_createArbitraryVector(vectorLength), 5);
@@ -116,12 +116,12 @@ public:
 	OrthogonalMatrixTest() : orthogonalMatrix(ORTH_X1, ORTH_Y1, ORTH_Z1, ORTH_X2, ORTH_Y2, ORTH_Z2, ORTH_X3, ORTH_Y3,
 		ORTH_Z3) {}
 
-	Matrix3D orthogonalMatrix;
+	Mat4 orthogonalMatrix;
 };
 
 class TwoMatricesTest : public Matrix3DTest {
 public:
-    Matrix3D matrix2;
+    Mat4 matrix2;
 
     void SetUp() override {
         Matrix3DTest::SetUp();
@@ -137,7 +137,7 @@ public:
     }
 };
 
-void _assertEquals(Matrix3D matrix, float x1, float y1, float z1, float x2, float y2, float z2, float x3,
+void _assertEquals(Mat4 matrix, float x1, float y1, float z1, float x2, float y2, float z2, float x3,
     float y3, float z3, float multiplier = 1) {
 	ASSERT_THAT(matrix.x1(), Eq(x1 * multiplier));
     ASSERT_THAT(matrix.y1(), Eq(y1 * multiplier));
@@ -150,7 +150,7 @@ void _assertEquals(Matrix3D matrix, float x1, float y1, float z1, float x2, floa
     ASSERT_THAT(matrix.z3(), Eq(z3 * multiplier));
 }
 
-void _assertClose(Matrix3D matrix, float x1, float y1, float z1, float x2, float y2, float z2, float x3,
+void _assertClose(Mat4 matrix, float x1, float y1, float z1, float x2, float y2, float z2, float x3,
 		float y3, float z3, float multiplier = 1) {
 	ASSERT_THAT(matrix.x1(), FloatNear(x1 * multiplier, DELTA));
 	ASSERT_THAT(matrix.y1(), FloatNear(y1 * multiplier, DELTA));
@@ -163,8 +163,8 @@ void _assertClose(Matrix3D matrix, float x1, float y1, float z1, float x2, float
 	ASSERT_THAT(matrix.z3(), FloatNear(z3 * multiplier, DELTA));
 }
 
-Matrix3D _createArbitraryOrthogonalMatrix() {
-	return Matrix3D(ORTH_X1, ORTH_Y1, ORTH_Z1, ORTH_X2, ORTH_Y2, ORTH_Z2, ORTH_X3, ORTH_Y3, ORTH_Z3);
+Mat4 _createArbitraryOrthogonalMatrix() {
+	return Mat4(ORTH_X1, ORTH_Y1, ORTH_Z1, ORTH_X2, ORTH_Y2, ORTH_Z2, ORTH_X3, ORTH_Y3, ORTH_Z3);
 }
 
 float _dotProd(const array<float const, 3> v1, array<float const, 3> v2) {
@@ -172,8 +172,8 @@ float _dotProd(const array<float const, 3> v1, array<float const, 3> v2) {
 }
 
 TEST_F(Matrix3DTest, MatrixMultiplication) {
-    matrix = Matrix3D();
-    Matrix3D m;
+    matrix = Mat4();
+    Mat4 m;
     m.multiplyByScalar(2);
     matrix.multiplyByMatrix(m);
     ASSERT_EQ(2, matrix.x1());
@@ -191,7 +191,7 @@ TEST_F(Matrix3DTest, MatrixMultiplication) {
 }
 
 TEST_F(Matrix3DTest, IdentityMatrix) {
-    matrix = Matrix3D();
+    matrix = Mat4();
     ASSERT_EQ(1, matrix.x1());
     ASSERT_EQ(0, matrix.y1());
     ASSERT_EQ(0, matrix.z1());
@@ -211,7 +211,7 @@ TEST_F(Matrix3DTest, IdentityMatrix) {
 }
 
 TEST_F(Matrix3DTest, ConstructorSavesParams) {
-	matrix = Matrix3D(X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3, XT, YT, ZT);
+	matrix = Mat4(X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3, XT, YT, ZT);
     ASSERT_EQ(X1, matrix.x1());
     ASSERT_EQ(X2, matrix.x2());
     ASSERT_EQ(X3, matrix.x3());
@@ -271,7 +271,7 @@ TEST_F(Matrix3DTest, MultiplyByScalar) {
 }
 
 TEST_F(Matrix3DTest, Clone) {
-    Matrix3D cloneMatrix = matrix.clone();
+    Mat4 cloneMatrix = matrix.clone();
     _assertEquals(cloneMatrix, X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3);
 }
 
@@ -322,7 +322,7 @@ TEST_F(Matrix3DTest, Scale) {
 }
 
 TEST_F(Matrix3DTest, Determinant) {
-	matrix = Matrix3D(3, -2, 0, 1, 4, 0, 0, 0, 2, 0, 0, 0);
+	matrix = Mat4(3, -2, 0, 1, 4, 0, 0, 0, 2, 0, 0, 0);
 	ASSERT_THAT(28, Eq(matrix.determinant()));
 }
 
@@ -428,44 +428,44 @@ TEST_F(Matrix3DTest, SwappingMatrixRows_negatesDeterminant) {
 }
 
 TEST_F(Matrix3DTest, IsEqual) {
-	Matrix3D matrix2 = matrix.clone();
+	Mat4 matrix2 = matrix.clone();
 	ASSERT_TRUE(matrix.isEqual(matrix2));
 	matrix2.y3(matrix2.y3() + 1);
 	ASSERT_FALSE(matrix.isEqual(matrix2));
 }
 
 TEST_F(Matrix3DTest, InverseOrthogonalMatrix_isTranspose) {
-	matrix = Matrix3D(-0.1495f, -0.1986f, -0.9685f, -0.8256f, 0.5640, 0.0117, -0.5439f, -0.8015f, 0.2484);
+	matrix = Mat4(-0.1495f, -0.1986f, -0.9685f, -0.8256f, 0.5640, 0.0117, -0.5439f, -0.8015f, 0.2484);
 	matrix.inverse();
 	_assertClose(matrix, -0.1495f, -0.8256f, -0.5439f, -0.1986f, 0.5640, -0.8015f, -0.9685f, 0.0117, 0.2484);
 }
 
 TEST_F(Matrix3DTest, Inverse) {
-	matrix = Matrix3D(-4, -3, 3, 0, 2, -2, 1, 4, -1);
+	matrix = Mat4(-4, -3, 3, 0, 2, -2, 1, 4, -1);
 	float determinant(matrix.determinant());
 	matrix.inverse();
 	_assertClose(matrix, 6, 9, 0, -2, 1, -8, -2, 13, -8, 1 / determinant);
 }
 
 TEST_F(Matrix3DTest, IsClose) {
-	Matrix3D compareMatrix = matrix.clone();
+	Mat4 compareMatrix = matrix.clone();
 	matrix.multiplyByScalar(1.000001);
 	ASSERT_TRUE(matrix.isClose(compareMatrix, 5));
 	ASSERT_FALSE(matrix.isClose(compareMatrix, 7));
 }
 
 TEST_F(Matrix3DTest, InverseOfInverse_givesOrigin) {
-	Matrix3D origin = matrix.clone();
+	Mat4 origin = matrix.clone();
 	matrix.inverse();
 	matrix.inverse();
 	ASSERT_TRUE(matrix.isClose(origin, 6));
 }
 
 TEST_F(Matrix3DTest, InverseMatrixMultipliedByOrigin_givesIdentityMatrix) {
-	Matrix3D inverseMatrix = matrix.clone();
+	Mat4 inverseMatrix = matrix.clone();
 	inverseMatrix.inverse();
 	matrix.multiplyByMatrix(inverseMatrix);
-	Matrix3D identityMatrix = Matrix3D(1, 0, 0, 0, 1, 0, 0, 0, 1);
+	Mat4 identityMatrix = Mat4(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	ASSERT_TRUE(matrix.isClose(identityMatrix, 6));
 }
 
@@ -487,7 +487,7 @@ TEST_F(OrthogonalMatrixTest, IsOrthogonal) {
 }
 
 TEST_F(Matrix3DTest, Orthogonalize) {
-	matrix = Matrix3D(1.05, 0, 0, 0, 0.95, 0, 0, 0, 0.8);
+	matrix = Mat4(1.05, 0, 0, 0, 0.95, 0, 0, 0, 0.8);
 	matrix.orthogonalize();
 	_assertClose(matrix, 1, 0, 0, 0, 1, 0, 0, 0, 1);
 }
@@ -546,39 +546,39 @@ TEST_F(Matrix3DTest, TranslateSavesGivenValues) {
 }
 
 TEST_F(Matrix3DTest, SimpleRotationTransform) {
-	Vector3D vector(1, 0, 0);
-	matrix = Matrix3D();
+	Vec4 vector(1, 0, 0);
+	matrix = Mat4();
 	matrix.rotateAboutZ(30);
 	matrix.transform(vector);
-	ASSERT_THAT(vector.y(), Eq(sinf(30 * M_PI / 180)));
-	ASSERT_THAT(vector.x(), Eq(cosf(30 * M_PI / 180)));
+	ASSERT_THAT(vector.y, Eq(sinf(30 * M_PI / 180)));
+	ASSERT_THAT(vector.x, Eq(cosf(30 * M_PI / 180)));
 }
 
 TEST_F(Matrix3DTest, SimpleScaleTransform) {
-	Vector3D vector(1, 1, 0);
-	matrix = Matrix3D();
+	Vec4 vector(1, 1, 0);
+	matrix = Mat4();
 	matrix.scaleAlong(1, 0, 0, 0);
 	matrix.transform(vector);
-	ASSERT_THAT(vector.y(), Eq(1));
-	ASSERT_THAT(vector.x(), Eq(0));
+	ASSERT_THAT(vector.y, Eq(1));
+	ASSERT_THAT(vector.x, Eq(0));
 }
 
 TEST_F(Matrix3DTest, SimpleTranslatePointTransform) {
-	Vector3D vector(1, 1, 1, 1);
-	matrix = Matrix3D();
+	Vec4 vector(1, 1, 1, 1);
+	matrix = Mat4();
 	matrix.translate(2, 3, 4);
 	matrix.transform(vector);
-	ASSERT_THAT(vector.x(), Eq(3));
-	ASSERT_THAT(vector.y(), Eq(4));
-	ASSERT_THAT(vector.z(), Eq(5));
+	ASSERT_THAT(vector.x, Eq(3));
+	ASSERT_THAT(vector.y, Eq(4));
+	ASSERT_THAT(vector.z, Eq(5));
 }
 
 TEST_F(Matrix3DTest, SimpleTranslateVectorTransform) {
-	Vector3D vector(1, 1, 1, 0);
-	matrix = Matrix3D();
+	Vec4 vector(1, 1, 1, 0);
+	matrix = Mat4();
 	matrix.translate(2, 3, 4);
 	matrix.transform(vector);
-	ASSERT_THAT(vector.x(), Eq(1));
-	ASSERT_THAT(vector.y(), Eq(1));
-	ASSERT_THAT(vector.z(), Eq(1));
+	ASSERT_THAT(vector.x, Eq(1));
+	ASSERT_THAT(vector.y, Eq(1));
+	ASSERT_THAT(vector.z, Eq(1));
 }
