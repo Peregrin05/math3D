@@ -210,6 +210,10 @@ TEST_F(Mat4Test, IdentityMatrix) {
     ASSERT_EQ(1, matrix.wt());
 }
 
+TEST_F(Mat4Test, StaticIdentityMatrix) {
+	ASSERT_TRUE(Mat4::IDENTITY.isEqual(Mat4()));
+}
+
 TEST_F(Mat4Test, ConstructorSavesParams) {
 	matrix = Mat4(X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3, XT, YT, ZT);
     ASSERT_EQ(X1, matrix.x1());
