@@ -432,6 +432,21 @@ TEST_F(Mat4Test, IsEqual) {
 	ASSERT_TRUE(matrix.isEqual(matrix2));
 	matrix2.y3(matrix2.y3() + 1);
 	ASSERT_FALSE(matrix.isEqual(matrix2));
+	matrix2 = matrix.clone();
+	matrix2.translate(1, 0, 0);
+	ASSERT_FALSE(matrix.isEqual(matrix2));
+	matrix2 = matrix.clone();
+	matrix2.translate(0, 1, 0);
+	ASSERT_FALSE(matrix.isEqual(matrix2));
+	matrix2 = matrix.clone();
+	matrix2.translate(0, 0, 1);
+	ASSERT_FALSE(matrix.isEqual(matrix2));
+	matrix2 = matrix.clone();
+	matrix2.v1.w++;
+	ASSERT_FALSE(matrix.isEqual(matrix2));
+	matrix2 = matrix.clone();
+	matrix2.vt.w++;
+	ASSERT_FALSE(matrix.isEqual(matrix2));
 }
 
 TEST_F(Mat4Test, InverseOrthogonalMatrix_isTranspose) {
