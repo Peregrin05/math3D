@@ -175,7 +175,7 @@ TEST_F(Vec4Test, SettingW_doesNotUpdateLength) {
 TEST_F(Vec4Test, MultiplyByScalar) {
     int multiplier(5);
 
-    vector.multiplyByScalar(multiplier);
+    vector *= multiplier;
     ASSERT_EQ(XV1 * multiplier, vector.x);
     ASSERT_EQ(YV1 * multiplier, vector.y);
     ASSERT_EQ(ZV1 * multiplier, vector.z);
@@ -183,13 +183,13 @@ TEST_F(Vec4Test, MultiplyByScalar) {
 
 TEST_F(Vec4Test, AfterMultiplyByScalar_lengthIsUpdated) {
     float oldLength(vector.length());
-    vector.multiplyByScalar(5);
+    vector *= 5;
 
     ASSERT_NE(oldLength, vector.length());
 }
 
-TEST_F(Vec4Test, Clone) {
-    Vec4 cloneVector = vector.clone();
+TEST_F(Vec4Test, CopyAssignment) {
+    Vec4 cloneVector = vector;
 
     ASSERT_EQ(cloneVector.x, vector.x);
     ASSERT_EQ(cloneVector.y, vector.y);
@@ -206,7 +206,12 @@ TEST_F(ZeroVectorTest, DISABLED_SetLengthThrowsException) {
 }
 
 TEST_F(TwoVectorsTest, Add) {
-    vector.add(vector2);
+    Vec4 v2 = vector;
+    vector += vector2;
+    ASSERT_EQ(XV1 + XV2, vector.x);
+    ASSERT_EQ(YV1 + YV2, vector.y);
+    ASSERT_EQ(ZV1 + ZV2, vector.z);
+    vector = v2 + vector2;
     ASSERT_EQ(XV1 + XV2, vector.x);
     ASSERT_EQ(YV1 + YV2, vector.y);
     ASSERT_EQ(ZV1 + ZV2, vector.z);
@@ -214,12 +219,17 @@ TEST_F(TwoVectorsTest, Add) {
 
 TEST_F(TwoVectorsTest, AfterAdd_lengthIsUpdated) {
     float oldLength(vector.length());
-    vector.add(vector2);
+    vector += vector2;
     ASSERT_NE(oldLength, vector.length());
 }
 
 TEST_F(TwoVectorsTest, Subtract) {
-    vector.subtract(vector2);
+    Vec4 v2 = vector;
+    vector -= vector2;
+    ASSERT_EQ(XV1 - XV2, vector.x);
+    ASSERT_EQ(YV1 - YV2, vector.y);
+    ASSERT_EQ(ZV1 - ZV2, vector.z);
+    vector = v2 - vector2;
     ASSERT_EQ(XV1 - XV2, vector.x);
     ASSERT_EQ(YV1 - YV2, vector.y);
     ASSERT_EQ(ZV1 - ZV2, vector.z);
@@ -227,20 +237,20 @@ TEST_F(TwoVectorsTest, Subtract) {
 
 TEST_F(TwoVectorsTest, AfterSubtract_lengthIsUpdated) {
     float oldLength(vector.length());
-    vector.subtract(vector2);
+    vector -= vector2;
     ASSERT_NE(oldLength, vector.length());
 }
 
 TEST_F(TwoVectorsTest, DistanceBetween) {
     float distance(Vec4::distanceBetween(vector, vector2));
-    vector2.subtract(vector);
+    vector2 -= vector;
     ASSERT_EQ(vector2.length(), distance);
 }
 
 TEST_F(TwoVectorsTest, DotProduct) {
-    float dotProduct(Vec4::dotProduct(vector, vector2));
-
-    ASSERT_EQ(vector2.x * vector.x + vector2.y * vector.y + vector2.z * vector.z, dotProduct);
+    float expected = vector2.x * vector.x + vector2.y * vector.y + vector2.z * vector.z;
+    ASSERT_EQ(expected, Vec4::dotProduct(vector, vector2));
+    ASSERT_EQ(expected, vector | vector2);
 }
 
 TEST_F(TwoVectorsTest, AngleBetween) {
@@ -254,11 +264,19 @@ TEST_F(TwoVectorsTest, AngleBetween) {
 }
 
 TEST_F(TwoVectorsTest, CrossProduct) {
-    Vec4 crossProduct = Vec4::crossProduct(vector, vector2);
+    float expectedX = vector.y * vector2.z - vector.z * vector2.y;
+    float expectedY = vector.z * vector2.x - vector.x * vector2.z;
+    float expectedZ = vector.x * vector2.y - vector.y * vector2.x;
 
-    ASSERT_EQ(vector.y * vector2.z - vector.z * vector2.y, crossProduct.x);
-    ASSERT_EQ(vector.z * vector2.x - vector.x * vector2.z, crossProduct.y);
-    ASSERT_EQ(vector.x * vector2.y - vector.y * vector2.x, crossProduct.z);
+    Vec4 crossProduct = Vec4::crossProduct(vector, vector2);
+    ASSERT_EQ(expectedX, crossProduct.x);
+    ASSERT_EQ(expectedY, crossProduct.y);
+    ASSERT_EQ(expectedZ, crossProduct.z);
+
+    crossProduct = vector ^ vector2;
+    ASSERT_EQ(expectedX, crossProduct.x);
+    ASSERT_EQ(expectedY, crossProduct.y);
+    ASSERT_EQ(expectedZ, crossProduct.z);
 }
 
 TEST_F(TwoVectorsTest, CcrossProductOfTwoAxisGivesThird) {
@@ -266,25 +284,25 @@ TEST_F(TwoVectorsTest, CcrossProductOfTwoAxisGivesThird) {
     Vec4 yAxis(0, 1);
     Vec4 zAxis(0, 0, 1);
 
-    ASSERT_TRUE(Vec4::crossProduct(xAxis, yAxis).isEqualTo(zAxis));
-    ASSERT_TRUE(Vec4::crossProduct(yAxis, zAxis).isEqualTo(xAxis));
-    ASSERT_TRUE(Vec4::crossProduct(zAxis, xAxis).isEqualTo(yAxis));
+    ASSERT_TRUE(Vec4::crossProduct(xAxis, yAxis).equals(zAxis));
+    ASSERT_TRUE(Vec4::crossProduct(yAxis, zAxis).equals(xAxis));
+    ASSERT_TRUE(Vec4::crossProduct(zAxis, xAxis).equals(yAxis));
 
     Vec4 xAxisNegative(-1);
     Vec4 yAxisNegative(0, -1);
     Vec4 zAxisNegative(0, 0, -1);
 
-    ASSERT_TRUE(Vec4::crossProduct(yAxis, xAxis).isEqualTo(zAxisNegative));
-    ASSERT_TRUE(Vec4::crossProduct(zAxis, yAxis).isEqualTo(xAxisNegative));
-    ASSERT_TRUE(Vec4::crossProduct(xAxis, zAxis).isEqualTo(yAxisNegative));
+    ASSERT_TRUE(Vec4::crossProduct(yAxis, xAxis).equals(zAxisNegative));
+    ASSERT_TRUE(Vec4::crossProduct(zAxis, yAxis).equals(xAxisNegative));
+    ASSERT_TRUE(Vec4::crossProduct(xAxis, zAxis).equals(yAxisNegative));
 }
 
 TEST_F(TwoVectorsTest, IsEqualToTrue) {
-    ASSERT_TRUE(vector.isEqualTo(Vec4(XV1, YV1, ZV1)));
+    ASSERT_TRUE(vector.equals(Vec4(XV1, YV1, ZV1)));
 }
 
 TEST_F(TwoVectorsTest, IsEqualToFalse) {
-    ASSERT_FALSE(vector.isEqualTo(vector2));
+    ASSERT_FALSE(vector.equals(vector2));
 }
 
 TEST_F(VectorWithMatrixTest, MultiplyByMatrix) {
