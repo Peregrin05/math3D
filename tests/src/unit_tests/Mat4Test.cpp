@@ -56,16 +56,20 @@ public:
     Mat4 matrix;
 
     void SetUp() override {
-        matrix.x1(X1);
-        matrix.y1(Y1);
-        matrix.z1(Z1);
-        matrix.x2(X2);
-        matrix.y2(Y2);
-        matrix.z2(Z2);
-        matrix.x3(X3);
-        matrix.y3(Y3);
-        matrix.z3(Z3);
+		setDefultValues();
     }
+
+	void setDefultValues() {
+		matrix.x1(X1);
+		matrix.y1(Y1);
+		matrix.z1(Z1);
+		matrix.x2(X2);
+		matrix.y2(Y2);
+		matrix.z2(Z2);
+		matrix.x3(X3);
+		matrix.y3(Y3);
+		matrix.z3(Z3);
+	}
 };
 
 Vec4 _createArbitraryVector(float length = 1) {
@@ -150,6 +154,26 @@ void _assertEquals(Mat4 matrix, float x1, float y1, float z1, float x2, float y2
     ASSERT_THAT(matrix.z3(), Eq(z3 * multiplier));
 }
 
+void _assertEquals(Mat4 matrix, float x1, float y1, float z1, float w1, float x2, float y2, float z2, float w2
+		, float x3, float y3, float z3, float w3, float xt, float yt, float zt, float wt, float multiplier = 1) {
+	ASSERT_THAT(matrix.x1(), Eq(x1 * multiplier));
+	ASSERT_THAT(matrix.y1(), Eq(y1 * multiplier));
+	ASSERT_THAT(matrix.z1(), Eq(z1 * multiplier));
+	ASSERT_THAT(matrix.w1(), Eq(w1 * multiplier));
+	ASSERT_THAT(matrix.x2(), Eq(x2 * multiplier));
+	ASSERT_THAT(matrix.y2(), Eq(y2 * multiplier));
+	ASSERT_THAT(matrix.z2(), Eq(z2 * multiplier));
+	ASSERT_THAT(matrix.w2(), Eq(w2 * multiplier));
+	ASSERT_THAT(matrix.x3(), Eq(x3 * multiplier));
+	ASSERT_THAT(matrix.y3(), Eq(y3 * multiplier));
+	ASSERT_THAT(matrix.z3(), Eq(z3 * multiplier));
+	ASSERT_THAT(matrix.w3(), Eq(w3 * multiplier));
+	ASSERT_THAT(matrix.xt(), Eq(xt * multiplier));
+	ASSERT_THAT(matrix.yt(), Eq(yt * multiplier));
+	ASSERT_THAT(matrix.zt(), Eq(zt * multiplier));
+	ASSERT_THAT(matrix.wt(), Eq(wt * multiplier));
+}
+
 void _assertClose(Mat4 matrix, float x1, float y1, float z1, float x2, float y2, float z2, float x3,
 		float y3, float z3, float multiplier = 1) {
 	ASSERT_THAT(matrix.x1(), FloatNear(x1 * multiplier, DELTA));
@@ -172,42 +196,40 @@ float _dotProd(const array<float const, 3> v1, array<float const, 3> v2) {
 }
 
 TEST_F(Mat4Test, MatrixMultiplication) {
-    matrix = Mat4();
+    matrix = Mat4::IDENTITY;
     Mat4 m;
-    m.multiplyByScalar(2);
+    m *= 2;
     matrix.multiplyByMatrix(m);
-    ASSERT_EQ(2, matrix.x1());
-    ASSERT_EQ(0, matrix.x2());
-    ASSERT_EQ(0, matrix.x3());
-    ASSERT_EQ(0, matrix.y1());
-    ASSERT_EQ(2, matrix.y2());
-    ASSERT_EQ(0, matrix.y3());
-    ASSERT_EQ(0, matrix.z1());
-    ASSERT_EQ(0, matrix.z2());
-    ASSERT_EQ(2, matrix.z3());
-    ASSERT_EQ(0, matrix.xt());
-    ASSERT_EQ(0, matrix.yt());
-    ASSERT_EQ(0, matrix.zt());
+	_assertEquals(matrix
+			, 2, 0, 0, 0
+			, 0, 2, 0, 0
+			, 0, 0, 2, 0
+			, 0, 0, 0, 1);
+
+	matrix = Mat4::IDENTITY;
+	matrix = matrix * m;
+	_assertEquals(matrix
+			, 2, 0, 0, 0
+			, 0, 2, 0, 0
+			, 0, 0, 2, 0
+			, 0, 0, 0, 1);
+
+	matrix = Mat4::IDENTITY;
+	matrix *= m;
+	_assertEquals(matrix
+			, 2, 0, 0, 0
+			, 0, 2, 0, 0
+			, 0, 0, 2, 0
+			, 0, 0, 0, 1);
 }
 
 TEST_F(Mat4Test, IdentityMatrix) {
     matrix = Mat4();
-    ASSERT_EQ(1, matrix.x1());
-    ASSERT_EQ(0, matrix.y1());
-    ASSERT_EQ(0, matrix.z1());
-    ASSERT_EQ(0, matrix.w1());
-    ASSERT_EQ(0, matrix.x2());
-    ASSERT_EQ(1, matrix.y2());
-    ASSERT_EQ(0, matrix.z2());
-    ASSERT_EQ(0, matrix.w2());
-    ASSERT_EQ(0, matrix.x3());
-    ASSERT_EQ(0, matrix.y3());
-    ASSERT_EQ(1, matrix.z3());
-    ASSERT_EQ(0, matrix.w3());
-    ASSERT_EQ(0, matrix.xt());
-    ASSERT_EQ(0, matrix.yt());
-    ASSERT_EQ(0, matrix.zt());
-    ASSERT_EQ(1, matrix.wt());
+	_assertEquals(matrix
+			, 1, 0, 0, 0
+			, 0, 1, 0, 0
+			, 0, 0, 1, 0
+			, 0, 0, 0, 1);
 }
 
 TEST_F(Mat4Test, StaticIdentityMatrix) {
@@ -216,18 +238,11 @@ TEST_F(Mat4Test, StaticIdentityMatrix) {
 
 TEST_F(Mat4Test, ConstructorSavesParams) {
 	matrix = Mat4(X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3, XT, YT, ZT);
-    ASSERT_EQ(X1, matrix.x1());
-    ASSERT_EQ(X2, matrix.x2());
-    ASSERT_EQ(X3, matrix.x3());
-    ASSERT_EQ(Y1, matrix.y1());
-    ASSERT_EQ(Y2, matrix.y2());
-    ASSERT_EQ(Y3, matrix.y3());
-    ASSERT_EQ(Z1, matrix.z1());
-    ASSERT_EQ(Z2, matrix.z2());
-    ASSERT_EQ(Z3, matrix.z3());
-    ASSERT_EQ(XT, matrix.xt());
-    ASSERT_EQ(YT, matrix.yt());
-    ASSERT_EQ(ZT, matrix.zt());
+	_assertEquals(matrix
+			, X1, Y1, Z1, 0
+			, X2, Y2, Z2, 0
+			, X3, Y3, Z3, 0
+			, XT, YT, ZT, 1);
 }
 
 TEST_F(Mat4Test, GetterSetter) {
@@ -269,9 +284,15 @@ TEST_F(Mat4Test, Identity) {
 }
 
 TEST_F(Mat4Test, MultiplyByScalar) {
-    float multiplier(5);
+    float multiplier = 5;
     matrix.multiplyByScalar(multiplier);
     _assertEquals(matrix, X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3, multiplier);
+	setDefultValues();
+	matrix *= multiplier;
+    _assertEquals(matrix, X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3, multiplier);
+	setDefultValues();
+	matrix = matrix * multiplier;
+	_assertEquals(matrix, X1, Y1, Z1, X2, Y2, Z2, X3, Y3, Z3, multiplier);
 }
 
 TEST_F(Mat4Test, Clone) {
@@ -600,4 +621,26 @@ TEST_F(Mat4Test, SimpleTranslateVectorTransform) {
 	ASSERT_THAT(vector.x, Eq(1));
 	ASSERT_THAT(vector.y, Eq(1));
 	ASSERT_THAT(vector.z, Eq(1));
+}
+
+TEST_F(Mat4Test, Addition) {
+	Mat4 m = Mat4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+	m.v1.w = 13;
+	m.v2.w = 14;
+	m.v3.w = 15;
+	m.vt.w = 16;
+	matrix = m + m;
+	_assertEquals(matrix
+			,  2,  4,  6, 26
+			,  8, 10, 12, 28
+			, 14, 16, 18, 30
+			, 20, 22, 24, 32);
+
+	matrix += m;
+
+	_assertEquals(matrix
+			,  3,  6,  9, 39
+			,  12, 15, 18, 42
+			, 21, 24, 27, 45
+			, 30, 33, 36, 48);
 }

@@ -29,6 +29,10 @@ public:
     Vec4 vector;
 
     void SetUp() override {
+        setDefaultValues();
+    }
+
+    void setDefaultValues() {
         vector.x = XV1;
         vector.y = YV1;
         vector.z = ZV1;
@@ -66,6 +70,10 @@ public:
 
     void SetUp() override {
         Vec4Test::SetUp();
+        setDefaultMatrixValues();
+    }
+
+    void setDefaultMatrixValues() {
         matrix.x1(X1);
         matrix.y1(Y1);
         matrix.z1(Z1);
@@ -280,14 +288,18 @@ TEST_F(TwoVectorsTest, IsEqualToFalse) {
 }
 
 TEST_F(VectorWithMatrixTest, MultiplyByMatrix) {
-    vector.multiplyByMatrix(matrix);
+    vector = vector * matrix;
     assertEquals(vector, XV1 * X1 + YV1 * X2 + ZV1 * X3, XV1 * Y1 + YV1 * Y2 + ZV1 * Y3,
             XV1 * Z1 + YV1 * Z2 + ZV1 * Z3);
+    setDefaultValues();
+    vector *= matrix;
+    assertEquals(vector, XV1 * X1 + YV1 * X2 + ZV1 * X3, XV1 * Y1 + YV1 * Y2 + ZV1 * Y3,
+                 XV1 * Z1 + YV1 * Z2 + ZV1 * Z3);
 }
 
 TEST_F(VectorWithMatrixTest, AfterMultiplyByMatrix_lengthIsUpdated) {
     float oldLength(vector.length());
-    vector.multiplyByMatrix(matrix);
+    vector *= matrix;
     ASSERT_NE(oldLength, vector.length());
 }
 
@@ -297,7 +309,7 @@ TEST_F(VectorWithMatrixTest, bla) {
 	int zt = 6;
 	matrix.translate(xt, yt, zt);
 	vector.w = 1;
-	vector.multiplyByMatrix(matrix);
+	vector *= matrix;
 
 	float x = XV1 * X1 + YV1 * X2 + ZV1 * X3;
 	float y = XV1 * Y1 + YV1 * Y2 + ZV1 * Y3;
@@ -311,7 +323,7 @@ TEST_F(VectorWithMatrixTest, bla2) {
 	int zt = 6;
 	matrix.translate(xt, yt, zt);
 	vector.w = 0;
-	vector.multiplyByMatrix(matrix);
+	vector *= matrix;
 
 	float x = XV1 * X1 + YV1 * X2 + ZV1 * X3;
 	float y = XV1 * Y1 + YV1 * Y2 + ZV1 * Y3;
