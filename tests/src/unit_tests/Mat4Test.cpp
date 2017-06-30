@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <array>
 #include "gmock/gmock.h"
 #include "Mat4.h"
