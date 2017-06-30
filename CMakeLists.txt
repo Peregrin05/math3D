@@ -8,15 +8,14 @@ if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
     message(SEND_ERROR "In-source builds are not allowed.")
 endif ()
 
-set (CMAKE_CXX_FLAGS "${CMAXE_CXX_FLAGS} -std=c++14 -Wall -Wno-missing-braces")
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
+enable_testing()
 
-set (CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set (EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set (LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests/src)
 
-add_subdirectory(tests)
+file(GLOB UNIT_TEST_SOURCE_FILES ${SOURCE_DIR}/unit_tests/*.cpp)
+add_executable(flash_math_tests ${UNIT_TEST_SOURCE_FILES})
+target_link_libraries(flash_math_tests ${CONAN_LIBS})
 

@@ -1,0 +1,6 @@
+[requires]
+flash_math/0.1@islamaliev/testing
+gmock/1.8.0@meshell/stable
+
+[generators]
+cmake
