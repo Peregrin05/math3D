@@ -4,7 +4,7 @@
 using namespace testing;
 using namespace flash::math;
 
-float const DELTA = 0.01;
+float const DELTA = 0.01f;
 
 class EulerAnglesTest : public testing::Test {
 public:
@@ -112,7 +112,7 @@ TEST_F(EulerAnglesCanonizeTest, IsCanonicalFalse) {
     eulerAngles.heading(-180);
     ASSERT_FALSE(eulerAngles.isCanonical());
 
-    eulerAngles.heading(180.01);
+    eulerAngles.heading(180.01f);
     ASSERT_FALSE(eulerAngles.isCanonical());
 
     reset();
@@ -120,7 +120,7 @@ TEST_F(EulerAnglesCanonizeTest, IsCanonicalFalse) {
     eulerAngles.pitch(-90.01f);
     ASSERT_FALSE(eulerAngles.isCanonical());
 
-    eulerAngles.pitch(90.01);
+    eulerAngles.pitch(90.01f);
     ASSERT_FALSE(eulerAngles.isCanonical());
 
     reset();
@@ -128,7 +128,7 @@ TEST_F(EulerAnglesCanonizeTest, IsCanonicalFalse) {
     eulerAngles.bank(-180);
     ASSERT_FALSE(eulerAngles.isCanonical());
 
-    eulerAngles.bank(180.01);
+    eulerAngles.bank(180.01f);
     ASSERT_FALSE(eulerAngles.isCanonical());
 }
 
@@ -261,24 +261,24 @@ TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrix) {
 	assertMatrix(1, 0, 0, 0, 1, 0, 0, 0, 1);
 
 	set(180, 45, 180);
-	assertMatrix(1, 0, 0, 0, -0.707f, 0.707, 0, -0.707f, -0.707f);
+	assertMatrix(1, 0, 0, 0, -0.707f, 0.707f, 0, -0.707f, -0.707f);
 
 	set(-135, -45, 0);
-	assertMatrix(-0.707f, 0, 0.707, 0.5, 0.707, 0.5, -0.5f, 0.707, -0.5f);
+	assertMatrix(-0.707f, 0, 0.707f, 0.5f, 0.707f, 0.5f, -0.5f, 0.707f, -0.5f);
 
 	set(-45, -90, 0);
-	assertMatrix(0.707, 0, 0.707, 0.707, 0, -0.707f, 0, 1, 0);
+	assertMatrix(0.707f, 0, 0.707f, 0.707f, 0, -0.707f, 0, 1, 0);
 
 	set(123, 33.5f, -32.7f);
-	assertMatrix(-0.713f, -0.45f, -0.538f, 0.091, 0.702, -0.706f, 0.696, -0.552f, -0.46f);
+	assertMatrix(-0.713f, -0.45f, -0.538f, 0.091f, 0.702f, -0.706f, 0.696f, -0.552f, -0.46f);
 
 	set(-30, 30, 70);
-	assertMatrix(0.061, 0.814, 0.578, -0.9f, 0.296, -0.322f, -0.433f, -0.5f, 0.75);
+	assertMatrix(0.061f, 0.814f, 0.578f, -0.9f, 0.296f, -0.322f, -0.433f, -0.5f, 0.75f);
 }
 
 TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrixBlaBla) {
     set(-135, -45, 0);
-    Mat4 m(-0.707f, 0, 0.707, 0.5, 0.707, 0.5, -0.5f, 0.707, -0.5f);
+    Mat4 m(-0.707f, 0, 0.707f, 0.5f, 0.707f, 0.5f, -0.5f, 0.707f, -0.5f);
     eulerAngles = EulerAngles::fromUprightMatrix(m);
     ASSERT_THAT(eulerAngles.heading(), FloatNear(-135, DELTA));
     ASSERT_THAT(eulerAngles.pitch(), FloatNear(-45, DELTA));
@@ -287,7 +287,7 @@ TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrixBlaBla) {
 
 TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrixBlaBlaBla) {
     set(-135, -45, 0);
-    Mat4 m(-0.707f, 0, 0.707, 0.5, 0.707, 0.5, -0.5f, 0.707, -0.5f);
+    Mat4 m(-0.707f, 0, 0.707f, 0.5f, 0.707f, 0.5f, -0.5f, 0.707f, -0.5f);
     m.transpose();
     eulerAngles = EulerAngles::fromObjectMatrix(m);
     ASSERT_THAT(eulerAngles.heading(), FloatNear(-135, DELTA));
@@ -295,12 +295,12 @@ TEST_F(EulerAnglesConvertToMatrixTest, ConvertToMatrixBlaBlaBla) {
     ASSERT_THAT(eulerAngles.bank(), FloatNear(0, DELTA));
 
     set(123, 33.5f, -32.7f);
-    m = Mat4(-0.713f, -0.45f, -0.538f, 0.091, 0.702, -0.706f, 0.696, -0.552f, -0.46f);
+    m = Mat4(-0.713f, -0.45f, -0.538f, 0.091f, 0.702f, -0.706f, 0.696f, -0.552f, -0.46f);
     m.transpose();
     eulerAngles = EulerAngles::fromObjectMatrix(m);
     ASSERT_THAT(eulerAngles.heading(), FloatNear(123, 0.5));
     ASSERT_THAT(eulerAngles.pitch(), FloatNear(33.5f, DELTA));
-    ASSERT_THAT(eulerAngles.bank(), FloatNear(-32.7f, 0.3));
+    ASSERT_THAT(eulerAngles.bank(), FloatNear(-32.7f, 0.3f));
 }
 
 // TODO: figure out why fromObjectMatrix() and fromUprightMatrix() are flipping sign

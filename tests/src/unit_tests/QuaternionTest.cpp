@@ -6,8 +6,8 @@
 using namespace testing;
 using namespace flash::math;
 
-float const DELTA = 0.006;
-float const EA_DELTA = 0.03;
+float const DELTA = 0.006f;
+float const EA_DELTA = 0.03f;
 
 class QuaternionTest : public testing::Test {
 public:
@@ -64,11 +64,11 @@ public:
 
 TEST_F(QuaternionTest, VectorConstructor) {
 	setAxisAngle(30, 1, 0, 0);
-	assertClose(quaternion, 0.966, 0.259, 0, 0);
+	assertClose(quaternion, 0.966f, 0.259f, 0, 0);
 }
 
 TEST_F(QuaternionTest, ToEulerAngles) {
-	set(0.966, 0.259, 0, 0);
+	set(0.966f, 0.259f, 0, 0);
 	EulerAngles ea = quaternion.uprightToEulerAngles();
 	ASSERT_THAT(ea.heading(), FloatNear(0, EA_DELTA));
 	ASSERT_THAT(ea.pitch(), FloatNear(30, EA_DELTA));
@@ -76,77 +76,77 @@ TEST_F(QuaternionTest, ToEulerAngles) {
 }
 
 TEST_F(QuaternionTest, UprightQuaternionFromEulerAngles) {
-	set(0.966, 0.259, 0, 0);
+	set(0.966f, 0.259f, 0, 0);
 	EulerAngles ea = quaternion.uprightToEulerAngles();
 	Quaternion q = ea.toUprightQuaternion();
-	assertClose(q, 0.966, 0.259, 0, 0);
+	assertClose(q, 0.966f, 0.259f, 0, 0);
 }
 
 TEST_F(QuaternionTest, ObjectQuaternionFromEulerAngles) {
-	set(0.966, 0.259, 0, 0);
+	set(0.966f, 0.259f, 0, 0);
 	EulerAngles ea = quaternion.objectToEulerAngles();
 	Quaternion q = ea.toObjectQuaternion();
-	assertClose(q, 0.966, 0.259, 0, 0);
+	assertClose(q, 0.966f, 0.259f, 0, 0);
 }
 
 TEST_F(QuaternionTest, ToMatrix) {
-	setAxisAngle(98.4, -0.863f, -0.357f, -0.357f);
-	assertMatrix(0.707, 0, 0.707, 0.707, 0, -0.707f, 0, 1, 0);
+	setAxisAngle(98.4f, -0.863f, -0.357f, -0.357f);
+	assertMatrix(0.707f, 0, 0.707f, 0.707f, 0, -0.707f, 0, 1, 0);
 
-	setAxisAngle(0, 0.707, -0.707f, 0);
+	setAxisAngle(0, 0.707f, -0.707f, 0);
 	assertMatrix(1, 0, 0, 0, 1, 0, 0, 0, 1);
 
-	setAxisAngle(87, 0.089, -0.506f, 0.857);
-	assertMatrix(0.061, 0.814, 0.578, -0.9f, 0.296, -0.322f, -0.433f, -0.5f, 0.75);
+	setAxisAngle(87, 0.089f, -0.506f, 0.857f);
+	assertMatrix(0.061f, 0.814f, 0.578f, -0.9f, 0.296f, -0.322f, -0.433f, -0.5f, 0.75f);
 
 	setAxisAngle(135, 1, 0, 0);
-	assertMatrix(1, 0, 0, 0, -0.707f, 0.707, 0, -0.707f, -0.707f);
+	assertMatrix(1, 0, 0, 0, -0.707f, 0.707f, 0, -0.707f, -0.707f);
 
-	setAxisAngle(261.6, 0.863, 0.357, 0.357);
-	assertMatrix(0.707, 0, 0.707, 0.707, 0, -0.707f, 0, 1, 0);
+	setAxisAngle(261.6f, 0.863f, 0.357f, 0.357f);
+	assertMatrix(0.707f, 0, 0.707f, 0.707f, 0, -0.707f, 0, 1, 0);
 
 	setAxisAngle(139, -0.156f, -0.912f, -0.378f);
-	assertMatrix(-0.707f, 0, 0.707, 0.5, 0.707, 0.5, -0.5f, 0.707, -0.5f);
+	assertMatrix(-0.707f, 0, 0.707f, 0.5f, 0.707f, 0.5, -0.5f, 0.707f, -0.5f);
 
 	setAxisAngle(7200, 0, -1, 0);
 	assertMatrix(1, 0, 0, 0, 1, 0, 0, 0, 1);
 
 	setAxisAngle(-135, -1, 0, 0);
-	assertMatrix(1, 0, 0, 0, -0.707f, 0.707, 0, -0.707f, -0.707f);
+	assertMatrix(1, 0, 0, 0, -0.707f, 0.707f, 0, -0.707f, -0.707f);
 }
 
 TEST_F(QuaternionTest, FromMatrix) {
-	setAxisAngle(98.4, -0.863f, -0.357f, -0.357f);
+	setAxisAngle(98.4f, -0.863f, -0.357f, -0.357f);
 	const Mat4 matrix = quaternion.toMatrix();
 	const Quaternion q = Quaternion::fromMatrix(matrix);
 	assertClose(q, q.w(), q.x(), q.y(), q.z());
 }
 
 TEST_F(QuaternionTest, Multiplication) {
-	quaternion = Quaternion(0.965, 0.149, -0.149f, 0.149);
+	quaternion = Quaternion(0.965f, 0.149f, -0.149f, 0.149f);
 	quaternion = quaternion * quaternion;
-	assertClose(quaternion, 0.867, 0.288, -0.288f, 0.288);
+	assertClose(quaternion, 0.867f, 0.288f, -0.288f, 0.288f);
 
-	quaternion = Quaternion(0.233, 0.06, -0.257f, -0.935f);
-	Quaternion quaternion2 = Quaternion(-0.752f, 0.286, 0.374, 0.459);
+	quaternion = Quaternion(0.233f, 0.06f, -0.257f, -0.935f);
+	Quaternion quaternion2 = Quaternion(-0.752f, 0.286f, 0.374f, 0.459f);
 	Quaternion resultQuaternion = quaternion * quaternion2;
-	assertClose(resultQuaternion, 0.333, 0.253, -0.015f, 0.906);
+	assertClose(resultQuaternion, 0.333f, 0.253f, -0.015f, 0.906f);
 }
 
 TEST_F(QuaternionTest, DotProduct) {
-	quaternion = Quaternion(0.233, 0.06, -0.257f, -0.935f);
-	Quaternion quaternion2 = Quaternion(-0.752f, 0.286, 0.374, 0.459);
+	quaternion = Quaternion(0.233f, 0.06f, -0.257f, -0.935f);
+	Quaternion quaternion2 = Quaternion(-0.752f, 0.286f, 0.374f, 0.459f);
 
 	float dotProduct = Quaternion::dotProduct(quaternion, quaternion2);
-	ASSERT_THAT(dotProduct, FloatNear(-0.683, DELTA));
+	ASSERT_THAT(dotProduct, FloatNear(-0.683f, DELTA));
 }
 
 TEST_F(QuaternionTest, Difference) {
-	quaternion = Quaternion(0.233, 0.06, -0.257f, -0.935f);
-	Quaternion quaternion2 = Quaternion(-0.752f, 0.286, 0.374, 0.459);
+	quaternion = Quaternion(0.233f, 0.06f, -0.257f, -0.935f);
+	Quaternion quaternion2 = Quaternion(-0.752f, 0.286f, 0.374f, 0.459f);
 
 	Quaternion resultQuaternion = Quaternion::getDifference(quaternion, quaternion2);
-	assertClose(resultQuaternion, -0.683f, 0.343, -0.401f, -0.5f);
+	assertClose(resultQuaternion, -0.683f, 0.343f, -0.401f, -0.5f);
 }
 
 TEST_F(QuaternionTest, Exponentiation) {
@@ -155,15 +155,15 @@ TEST_F(QuaternionTest, Exponentiation) {
 	float exponent = 0.33333333f;
 	quaternion = quaternion.exp(exponent);
 	
-	assertClose(quaternion, 0.9659, 0.2588, 0, 0);
+	assertClose(quaternion, 0.9659f, 0.2588f, 0, 0);
 }
 
 TEST_F(QuaternionTest, Slerp) {
 	setAxisAngle(20, 1, 0, 0);
 	Quaternion start = quaternion;
 	setAxisAngle(40, 1, 0, 0);
-	float fraction = 0.5;
+	float fraction = 0.5f;
 	quaternion = start.slerp(quaternion, fraction);
 
-	assertClose(quaternion, 0.9659, 0.2588, 0, 0);
+	assertClose(quaternion, 0.9659f, 0.2588f, 0, 0);
 }

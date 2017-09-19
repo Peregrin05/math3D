@@ -174,7 +174,7 @@ TEST_F(Vec4Test, SettingW_doesNotUpdateLength) {
 }
 
 TEST_F(Vec4Test, MultiplyByScalar) {
-    int multiplier(5);
+    float multiplier(5);
 
     vector *= multiplier;
     ASSERT_EQ(XV1 * multiplier, vector.x);
@@ -323,9 +323,9 @@ TEST_F(VectorWithMatrixTest, AfterMultiplyByMatrix_lengthIsUpdated) {
 }
 
 TEST_F(VectorWithMatrixTest, bla) {
-	int xt = 4;
-	int yt = 5;
-	int zt = 6;
+	float xt = 4;
+	float yt = 5;
+	float zt = 6;
 	matrix.translate(xt, yt, zt);
 	vector.w = 1;
 	vector *= matrix;
@@ -337,9 +337,9 @@ TEST_F(VectorWithMatrixTest, bla) {
 }
 
 TEST_F(VectorWithMatrixTest, bla2) {
-	int xt = 4;
-	int yt = 5;
-	int zt = 6;
+	float xt = 4;
+	float yt = 5;
+	float zt = 6;
 	matrix.translate(xt, yt, zt);
 	vector.w = 0;
 	vector *= matrix;

@@ -17,7 +17,7 @@ public:
 		const float radian2 = angle2 * radialMult;
 		const float radianDifference = difference * radialMult;
         const float result = Orientation::getShortestDifference(radian1, radian2);
-        ASSERT_THAT(radianDifference, testing::FloatNear(result, 0.0001));
+        ASSERT_THAT(radianDifference, testing::FloatNear(result, 0.0001f));
 	}
 };
 

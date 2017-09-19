@@ -39,9 +39,9 @@ const array<const float, 3> PV = {P1, P2, P3};
 const array<const float, 3> QV = {Q1, Q2, Q3};
 const array<const float, 3> RV = {R1, R2, R3};
 
-const int VALUE = 5;
+const float VALUE = 5;
 
-const float DELTA = 0.002;
+const float DELTA = 0.002f;
 
 const float ORTH_X1 = 0.8931070092097471f;
 const float ORTH_Y1 = 0.1264769355380969f;
@@ -75,7 +75,7 @@ public:
 };
 
 Vec4 _createArbitraryVector(float length = 1) {
-	Vec4 vector = Vec4(0.2666, -0.5347f, 0.8019);
+	Vec4 vector = Vec4(0.2666f, -0.5347f, 0.8019f);
 	vector.setLength(length);
 	return vector;
 }
@@ -310,22 +310,22 @@ TEST_F(TwoMatricesTest, MultiplyByMatrix) {
 
 TEST_F(IdentityMatrixTest, RotateAboutX) {
     identityMatrix.rotateAboutX(-22);
-    _assertClose(identityMatrix, 1, 0, 0, 0, 0.927, -0.375f, 0, 0.375, 0.927);
+    _assertClose(identityMatrix, 1, 0, 0, 0, 0.927f, -0.375f, 0, 0.375f, 0.927f);
    }
 
 TEST_F(IdentityMatrixTest, RotateAboutY) {
     identityMatrix.rotateAboutY(30);
-    _assertClose(identityMatrix, 0.866, 0, -0.5f, 0, 1, 0, 0.5, 0, 0.866);
+    _assertClose(identityMatrix, 0.866f, 0, -0.5f, 0, 1, 0, 0.5f, 0, 0.866f);
 }
 
 TEST_F(IdentityMatrixTest, RotateAboutZ) {
     identityMatrix.rotateAboutZ(30);
-    _assertClose(identityMatrix, 0.866, 0.5, 0, -0.5f, 0.866, 0, 0, 0, 1);
+    _assertClose(identityMatrix, 0.866f, 0.5f, 0, -0.5f, 0.866f, 0, 0, 0, 1);
 }
 
 TEST_F(IdentityMatrixTest, RotateAbout) {
     rotateIdentityMatrixAlongArbitraryVector();
-    _assertClose(identityMatrix, 0.968, -0.212f, -0.131f, 0.203, 0.976, -0.084f, 0.146, 0.054, 0.988);
+    _assertClose(identityMatrix, 0.968f, -0.212f, -0.131f, 0.203f, 0.976f, -0.084f, 0.146f, 0.054f, 0.988f);
 }
 
 //[Test(expects="errors.NotUnitVectorError")]
@@ -335,7 +335,7 @@ TEST_F(IdentityMatrixTest, DISABLED_WhenRotatingAlongNotUnitVector_throwExceptio
 
 TEST_F(IdentityMatrixTest, ScaleAlong) {
 	scaleIdentityMatrixAlongArbitraryVector();
-	_assertClose(identityMatrix, 1.285, 0, 0, 0, 2.145, 0, 0, 0, 3.573);
+	_assertClose(identityMatrix, 1.285f, 0, 0, 0, 2.145f, 0, 0, 0, 3.573f);
 }
 
 //[Test(expects="errors.NotUnitVectorError")]
@@ -477,9 +477,9 @@ TEST_F(Mat4Test, IsEqual) {
 }
 
 TEST_F(Mat4Test, InverseOrthogonalMatrix_isTranspose) {
-	matrix = Mat4(-0.1495f, -0.1986f, -0.9685f, -0.8256f, 0.5640, 0.0117, -0.5439f, -0.8015f, 0.2484);
+	matrix = Mat4(-0.1495f, -0.1986f, -0.9685f, -0.8256f, 0.5640f, 0.0117f, -0.5439f, -0.8015f, 0.2484f);
 	matrix.inverse();
-	_assertClose(matrix, -0.1495f, -0.8256f, -0.5439f, -0.1986f, 0.5640, -0.8015f, -0.9685f, 0.0117, 0.2484);
+	_assertClose(matrix, -0.1495f, -0.8256f, -0.5439f, -0.1986f, 0.5640f, -0.8015f, -0.9685f, 0.0117f, 0.2484f);
 }
 
 TEST_F(Mat4Test, Inverse) {
@@ -491,7 +491,7 @@ TEST_F(Mat4Test, Inverse) {
 
 TEST_F(Mat4Test, IsClose) {
 	Mat4 compareMatrix = matrix.clone();
-	matrix.multiplyByScalar(1.000001);
+	matrix.multiplyByScalar(1.000001f);
 	ASSERT_TRUE(matrix.isClose(compareMatrix, 5));
 	ASSERT_FALSE(matrix.isClose(compareMatrix, 7));
 }
@@ -529,7 +529,7 @@ TEST_F(OrthogonalMatrixTest, IsOrthogonal) {
 }
 
 TEST_F(Mat4Test, Orthogonalize) {
-	matrix = Mat4(1.05, 0, 0, 0, 0.95, 0, 0, 0, 0.8);
+	matrix = Mat4(1.05f, 0, 0, 0, 0.95f, 0, 0, 0, 0.8f);
 	matrix.orthogonalize();
 	_assertClose(matrix, 1, 0, 0, 0, 1, 0, 0, 0, 1);
 }
@@ -543,7 +543,7 @@ TEST_F(OrthogonalMatrixTest, OrthogonalizeUnevenlyScaledMatrix) {
 	orthogonalMatrix.x2(orthogonalMatrix.x2() * scale);
 	orthogonalMatrix.y2(orthogonalMatrix.y2() * scale);
 	orthogonalMatrix.z2(orthogonalMatrix.z2() * scale);
-	scale = 0.3;
+	scale = 0.3f;
 	orthogonalMatrix.x3(orthogonalMatrix.x3() * scale);
 	orthogonalMatrix.y3(orthogonalMatrix.y3() * scale);
 	orthogonalMatrix.z3(orthogonalMatrix.z3() * scale);
@@ -592,8 +592,8 @@ TEST_F(Mat4Test, SimpleRotationTransform) {
 	matrix = Mat4();
 	matrix.rotateAboutZ(30);
 	matrix.transform(vector);
-	ASSERT_THAT(vector.y, Eq(sinf(30 * M_PI / 180)));
-	ASSERT_THAT(vector.x, Eq(cosf(30 * M_PI / 180)));
+	ASSERT_THAT(vector.y, Eq(sinf(30 * static_cast<float>(M_PI) / 180)));
+	ASSERT_THAT(vector.x, Eq(cosf(30 * static_cast<float>(M_PI) / 180)));
 }
 
 TEST_F(Mat4Test, SimpleScaleTransform) {
